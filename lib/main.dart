@@ -1,4 +1,4 @@
-import 'package:cleotour/widgets/common/post.dart';
+import 'package:cleotour/screens/home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,9 +11,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Cleotour',
-      home: Post(),
+    return MaterialApp(
+      title: 'CleoTour',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => HomeScreen(),
+      },
     );
   }
 }
