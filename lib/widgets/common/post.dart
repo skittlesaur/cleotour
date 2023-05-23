@@ -16,7 +16,6 @@ class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double horizontalMargins = screenWidth * 0.04;
     double padding = screenWidth * 0.03;
 
     return Container(
@@ -25,8 +24,7 @@ class _PostState extends State<Post> {
         color: Color.fromRGBO(32, 32, 33, 1),
         borderRadius: BorderRadius.circular(15),
       ),
-      margin: EdgeInsets.only(
-          left: horizontalMargins, right: horizontalMargins, top: 5, bottom: 5),
+      margin: EdgeInsets.symmetric(vertical: 5),
       padding: EdgeInsets.only(top: padding, left: padding, right: padding),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -96,14 +94,21 @@ class _PostState extends State<Post> {
         SizedBox(
           height: screenWidth * 0.02,
         ),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: Image.network(
-            'https://media.licdn.com/dms/image/D4D03AQGmMdzSofuBQA/profile-displayphoto-shrink_800_800/0/1665876534705?e=1690416000&v=beta&t=sTyRFK17UiNNzfEftuBSkrBU_utoNv5jghaQfCDx3_M',
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-        ),
+        GestureDetector(
+            onDoubleTap: () {
+              setState(() {
+                liked = !liked;
+                liked ? likes++ : likes--;
+              });
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.network(
+                'https://media.licdn.com/dms/image/D4D03AQGmMdzSofuBQA/profile-displayphoto-shrink_800_800/0/1665876534705?e=1690416000&v=beta&t=sTyRFK17UiNNzfEftuBSkrBU_utoNv5jghaQfCDx3_M',
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            )),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

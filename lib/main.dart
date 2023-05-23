@@ -1,6 +1,6 @@
 import 'package:cleotour/screens/account.dart';
 import 'package:cleotour/screens/favorites.dart';
-import 'package:cleotour/widgets/bottom-nvaigation.dart';
+import 'package:cleotour/widgets/bottom-navigation.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/explore.dart';
@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
       title: 'CleoTour',
       home: Scaffold(
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: IndexedStack(
               index: _currentIndex,
               children: _screens,

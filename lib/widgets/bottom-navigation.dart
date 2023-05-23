@@ -27,7 +27,7 @@ class _BottomNavigation extends State<BottomNavigation> {
       backgroundColor: Colors.black,
       items: <BottomNavigationBarItem>[
         _buildNavItem(0, Icons.home, 'Home'),
-        _buildNavItem(1, Icons.search, 'Explore'),
+        _buildNavItem(1, Icons.auto_graph_rounded, 'Explore'),
         _buildNavItem(2, Icons.favorite, 'Favorites'),
         _buildNavItem(3, Icons.person, 'Account'),
       ],
