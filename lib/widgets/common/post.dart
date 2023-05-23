@@ -11,7 +11,7 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   bool liked = false;
-  int likes = 40;
+  int likes = 1000000000;
 
   @override
   Widget build(BuildContext context) {
@@ -19,15 +19,14 @@ class _PostState extends State<Post> {
     double horizontalMargins = screenWidth * 0.04;
     double padding = screenWidth * 0.03;
 
-    return Scaffold(
-        body: Center(
-            child: Container(
+    return Container(
       width: screenWidth,
       decoration: BoxDecoration(
         color: Color.fromRGBO(32, 32, 33, 1),
         borderRadius: BorderRadius.circular(15),
       ),
-      margin: EdgeInsets.symmetric(horizontal: horizontalMargins),
+      margin: EdgeInsets.only(
+          left: horizontalMargins, right: horizontalMargins, top: 5, bottom: 5),
       padding: EdgeInsets.only(top: padding, left: padding, right: padding),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -35,8 +34,8 @@ class _PostState extends State<Post> {
             children: [
               const CircleAvatar(
                 backgroundImage: AssetImage('assets/image.png'),
-                foregroundImage: NetworkImage(
-                    'https://media.licdn.com/dms/image/D4D03AQGmPBfs91jEYg/profile-displayphoto-shrink_400_400/0/1676393947951?e=1690416000&v=beta&t=Mp1Do9pLScVGwrrToAtyQT5wnGYMxxhQK2i-b52diXw'),
+                foregroundImage:
+                    NetworkImage('https://shorty-shortener.vercel.app/12oNKo'),
                 radius: 25,
                 backgroundColor: Color.fromRGBO(32, 32, 33, 1),
               ),
@@ -45,7 +44,7 @@ class _PostState extends State<Post> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Omar Barbary',
+                    'El-Youm 7',
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Inter',
@@ -64,7 +63,7 @@ class _PostState extends State<Post> {
                       width: 1,
                     ),
                     Text(
-                      'Zamalek, Cairo',
+                      'Yasmeen 1, New Cairo',
                       style: TextStyle(
                         color: Colors.grey[500],
                         fontFamily: 'Inter',
@@ -87,7 +86,7 @@ class _PostState extends State<Post> {
           height: screenWidth * 0.02,
         ),
         const Text(
-          'Exploring Zamalek, Cairo - a vibrant neighborhood with colorful buildings, art galleries, trendy cafes and stunning views of the Nile River. 🇪🇬🌉',
+          'Finally the most handsome man was spotted in EGYPPPTTT!!!! 🇪🇬🌉',
           style: TextStyle(
               color: Colors.white,
               fontFamily: 'Inter',
@@ -100,7 +99,7 @@ class _PostState extends State<Post> {
         ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: Image.network(
-            'https://hips.hearstapps.com/hmg-prod/images/robert-downey-jr-1673534075.jpg?crop=0.627xw:0.390xh;0.258xw,0.0219xh&resize=1200:*',
+            'https://media.licdn.com/dms/image/D4D03AQGmMdzSofuBQA/profile-displayphoto-shrink_800_800/0/1665876534705?e=1690416000&v=beta&t=sTyRFK17UiNNzfEftuBSkrBU_utoNv5jghaQfCDx3_M',
             width: double.infinity,
             fit: BoxFit.cover,
           ),
@@ -196,6 +195,6 @@ class _PostState extends State<Post> {
           ],
         ),
       ]),
-    )));
+    );
   }
 }
