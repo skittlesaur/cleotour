@@ -1,16 +1,29 @@
-import 'package:cleotour/screens/home.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cleotour/screens/account.dart';
+import 'package:cleotour/screens/favorites.dart';
+import 'package:cleotour/widgets/bottom-navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:cleotour/widgets/common/trendingSection.dart';
+
+import 'screens/explore.dart';
+import 'screens/home.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
 
-  // This widget is the root of your application.
+class _MyAppState extends State<MyApp> {
+  int _currentIndex = 0;
+  final List<Widget> _screens = [
+    HomeScreen(),
+    ExploreScreen(),
+    FavoritesScreen(),
+    AccountScreen(),
+  ];
+
   @override
   // Widget build(BuildContext context) {
   //   return const CupertinoApp(
@@ -20,12 +33,24 @@ class MyApp extends StatelessWidget {
   // }
 
   Widget build(BuildContext context) {
-    return CupertinoApp(
-      title: 'Cleotour',
+    return MaterialApp(
+      title: 'CleoTour',
       home: Scaffold(
-        body: TrendingSection(),
-        backgroundColor: Colors.black,
-      ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: IndexedStack(
+              index: _currentIndex,
+              children: _screens,
+            ),
+          ),
+          bottomNavigationBar: BottomNavigation(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          )),
     );
   }
 }

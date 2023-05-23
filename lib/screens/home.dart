@@ -1,13 +1,16 @@
-import 'package:flutter/cupertino.dart';
-import 'package:cleotour/widgets/common/navigation.dart';
+import 'package:flutter/material.dart';
+
+import '../widgets/common/post.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  static const String routeName = '/home';
-
   @override
   Widget build(BuildContext context) {
-    return const NavigationBar();
+    return Scaffold(
+      body: SafeArea(
+          child: SingleChildScrollView(
+              child: Column(
+        children: [Post(), Post(), Post()],
+      ))),
+    );
   }
 }
