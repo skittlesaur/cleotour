@@ -25,6 +25,15 @@ class _ImageInputState extends State<ImageInput> {
     });
   }
 
+  // Future<void> _uploadImage() async {
+  //   final uuid = Uuid();
+  //   final ref = _storage.ref().child('images/${uuid.v4()}');
+  //   final uploadTask = ref.putFile(_image!);
+  //   final snapshot = await uploadTask.whenComplete(() {});
+  //   final downloadUrl = await snapshot.ref.getDownloadURL();
+  //   // Store the download URL in a variable or upload to Firestore here
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Column(
