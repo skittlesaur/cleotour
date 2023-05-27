@@ -7,7 +7,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'screens/add-post.dart';
 import 'screens/home.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 

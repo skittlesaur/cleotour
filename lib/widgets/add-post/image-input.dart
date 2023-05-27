@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ImageInput extends StatefulWidget {
   @override
@@ -11,8 +12,7 @@ class ImageInput extends StatefulWidget {
 
 class _ImageInputState extends State<ImageInput> {
   File? _storedImage;
-  final _storageUrl = Uri.parse(
-      'https://cleotour-8bd53-default-rtdb.firebaseio.com/posts.json');
+  final _storage = FirebaseStorage.instance;
 
   Future getImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -25,14 +25,11 @@ class _ImageInputState extends State<ImageInput> {
     });
   }
 
-  // Future<void> _uploadImage() async {
-  //   final uuid = Uuid();
-  //   final ref = _storage.ref().child('images/${uuid.v4()}');
-  //   final uploadTask = ref.putFile(_image!);
-  //   final snapshot = await uploadTask.whenComplete(() {});
-  //   final downloadUrl = await snapshot.ref.getDownloadURL();
-  //   // Store the download URL in a variable or upload to Firestore here
-  // }
+  Future uploadImage() async {
+    final uuid = Uuid();
+    final ref = _storage.ref().child('images/${uuid.v4()}');
+    final uploadTask = ref.putFile(_storedImage!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +56,7 @@ class _ImageInputState extends State<ImageInput> {
         MaterialButton(
           onPressed: () {
             getImage();
+            uploadImage();
           },
           color: Color.fromRGBO(12, 12, 12, 1),
           child: const Text(
