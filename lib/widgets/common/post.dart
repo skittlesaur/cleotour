@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:cleotour/widgets/common/addCommentWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:cleotour/widgets/common/comment.dart';
 
@@ -233,11 +234,12 @@ class _PostState extends State<Post> {
                       fontWeight: FontWeight.w500)),
               Expanded(
                   child: ListView.builder(
-                itemCount: 10, // Replace with the actual number of comments
+                itemCount: comments.length, // Replace with the actual number of comments
                 itemBuilder: (BuildContext context, int index) {
-                  return _buildComment();
+                  Comment comment = comments[index];
+                  return ListTile(title: comment);
                 },
-              )),
+              )), AddCommentWidget()
             ]));
       },
     );
