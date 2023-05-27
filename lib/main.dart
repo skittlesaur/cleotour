@@ -29,6 +29,13 @@ class _MyAppState extends State<MyApp> {
   ];
 
   @override
+  // Widget build(BuildContext context) {
+  //   return const CupertinoApp(
+  //     title: 'Cleotour',
+  //     home: HomeScreen(),
+  //   );
+  // }
+
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'CleoTour',
