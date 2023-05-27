@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cleotour/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +10,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  var usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final authenticationInstance = FirebaseAuth.instance;
+  String? errorMessage = '';
   var authenticationMode = 0;
   void toggleAuthMode() {
     if (authenticationMode == 0) {
@@ -26,13 +28,35 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> signIn() async {
+    try {
+      await Auth().signInWithEmailAndPassword(
+          email: _emailController.text, password: _passwordController.text);
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
+
+  Future<void> register() async {
+    try {
+      Auth().createUserWithEmailAndPassword(
+          email: _emailController.text, password: _passwordController.text);
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errorMessage = e.message;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         width: double.infinity,
         height: 400,
-        margin: EdgeInsets.only(top: 100, left: 10, right: 10),
+        margin: const EdgeInsets.only(top: 100, left: 10, right: 10),
         child: Card(
           elevation: 5,
           shape: RoundedRectangleBorder(
@@ -44,24 +68,24 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Center(
                   child: Text(
-                    "Class Chat",
+                    "Cleotours",
                     style: TextStyle(fontSize: 30),
                   ),
                 ),
                 TextField(
                   decoration: InputDecoration(labelText: "Email"),
-                  controller: emailController,
+                  controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                 ),
                 TextField(
                   decoration: InputDecoration(labelText: "Password"),
-                  controller: passwordController,
+                  controller: _passwordController,
                   obscureText: true,
                 ),
                 if (authenticationMode == 1)
                   TextField(
                     decoration: InputDecoration(labelText: "Username"),
-                    controller: usernameController,
+                    controller: _usernameController,
                   ),
                 ElevatedButton(
                   onPressed: () {
@@ -88,9 +112,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginORsignup() async {
-    var email = emailController.text.trim();
-    var password = passwordController.text.trim();
-    var username = usernameController.text.trim();
+    var email = _emailController.text.trim();
+    var password = _passwordController.text.trim();
+    var username = _usernameController.text.trim();
     UserCredential authResult;
     try {
       if (authenticationMode == 1) // sign up
@@ -100,6 +124,13 @@ class _LoginScreenState extends State<LoginScreen> {
           email: email,
           password: password,
         );
+        try {
+          authResult.user?.updateDisplayName(username);
+        } catch (e) {
+          print(e.toString());
+          return null;
+        }
+        debugPrint(authResult.user!.displayName);
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authResult.user!.uid)
@@ -113,9 +144,11 @@ class _LoginScreenState extends State<LoginScreen> {
           email: email,
           password: password,
         );
+        debugPrint("displayname:");
+        debugPrint(authenticationInstance.currentUser!.displayName);
       }
     } catch (err) {
-      print(err.toString());
+      debugPrint(err.toString());
     }
   }
 }
