@@ -31,7 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> signIn() async {
     try {
       await Auth().signInWithEmailAndPassword(
-          email: _emailController.text, password: _passwordController.text);
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
@@ -42,7 +43,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> register() async {
     try {
       Auth().createUserWithEmailAndPassword(
-          email: _emailController.text, password: _passwordController.text);
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+          username: _usernameController.text.trim());
     } on FirebaseAuthException catch (e) {
       setState(() {
         errorMessage = e.message;
@@ -119,33 +122,10 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       if (authenticationMode == 1) // sign up
       {
-        authResult =
-            await authenticationInstance.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        try {
-          authResult.user?.updateDisplayName(username);
-        } catch (e) {
-          print(e.toString());
-          return null;
-        }
-        debugPrint(authResult.user!.displayName);
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(authResult.user!.uid)
-            .set({
-          'username': username,
-          'email': email,
-        });
+        await register();
       } else //log in
       {
-        authResult = await authenticationInstance.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        debugPrint("displayname:");
-        debugPrint(authenticationInstance.currentUser!.displayName);
+        await signIn();
       }
     } catch (err) {
       debugPrint(err.toString());

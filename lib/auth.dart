@@ -1,5 +1,5 @@
-import 'package:cleotour/model/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Auth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -15,26 +15,37 @@ class Auth {
         email: email, password: password);
   }
 
-  Future<void> createUserWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
-    await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email, password: password);
+  Future<void> createUserWithEmailAndPassword(
+      {required String email,
+      required String password,
+      required String username}) async {
+    UserCredential authResult;
+    authResult = await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    try {
+      authResult.user?.updateDisplayName(username);
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(authResult.user!.uid)
+          .set({
+        'username': username,
+        'email': email,
+      });
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }
 
-  UserModel? getCurrentUser() {
+  User? getCurrentUser() {
     final User? currentUser = _firebaseAuth.currentUser;
     if (currentUser != null) {
-      return UserModel(
-        id: currentUser.uid,
-        email: currentUser.email!,
-        userName: currentUser.displayName!,
-      );
+      return currentUser;
     } else {
       return null;
     }
