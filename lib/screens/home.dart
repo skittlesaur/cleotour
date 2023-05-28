@@ -9,8 +9,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var categoryValue = "Restaurant";
+  var categoryValue = "All";
   Stream<QuerySnapshot<Object?>> getPosts() {
+    if (categoryValue == 'All') {
+      return FirebaseFirestore.instance
+          .collection("Posts")
+          .orderBy("postedAt", descending: true)
+          .snapshots();
+    }
     return FirebaseFirestore.instance
         .collection("Posts")
         .where('category', isEqualTo: categoryValue)
@@ -22,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: SafeArea(
           child: Column(
         children: [
@@ -32,7 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.all(10),
                 child: Text(
                   "Recent",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white),
                 ),
               ),
               // Chip(
@@ -50,6 +60,10 @@ class _HomeScreenState extends State<HomeScreen> {
               //   ), //Text
               // )
               DropdownButton<String>(
+                borderRadius: BorderRadius.circular(10),
+                padding: EdgeInsets.only(left: 10, right: 10),
+                dropdownColor: Color.fromRGBO(255, 191, 0, 1),
+                focusColor: Colors.grey.shade900,
                 value: categoryValue,
                 onChanged: (String? newValue) {
                   setState(() {
@@ -60,10 +74,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconSize: 24.0,
                 elevation: 16,
                 underline: SizedBox(),
-                items: ['Beach', 'Club', 'Museum', 'Restaurant']
+                items: ['Beach', 'Club', 'Museum', 'Restaurant', 'All']
                     .map((String item) {
                   return DropdownMenuItem<String>(
-                    child: Text(item),
+                    child: Text(
+                      item,
+                      style: TextStyle(color: Colors.white),
+                    ),
                     value: item,
                   );
                 }).toList(),
