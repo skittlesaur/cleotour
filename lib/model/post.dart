@@ -5,13 +5,14 @@ class Post {
   num? rating;
   List<String>? imageUrls;
   List<String>? comments;
+  String category;
 
-  Post({
-    required this.id,
-    required this.userID,
-    required this.body,
-    this.rating = 0,
-    required this.imageUrls,
-    this.comments,
-  });
+  Post(
+      {required this.id,
+      required this.userID,
+      required this.body,
+      this.rating = 0,
+      required this.imageUrls,
+      this.comments,
+      required this.category});
 }
