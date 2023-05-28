@@ -34,7 +34,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
       String imageUrl = ref.fullPath;
       final uploadTask = ref.putFile(File(imagePath));
 
-      await _postsCollection.doc().set({
+      var newDocRef = await _postsCollection.doc();
+
+      await newDocRef.set({
+        'id': newDocRef.id,
         'body': _postBodyController.text,
         'postedAt': DateTime.now().toLocal().toString(),
         'location': _locationController.text,

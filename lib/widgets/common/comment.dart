@@ -3,16 +3,20 @@
 import 'package:flutter/material.dart';
 
 class Comment extends StatefulWidget {
+  String postId;
   String author;
   String comment;
+  String postedAt;
   int likes;
-  bool liked;
+  bool liked = false;
 
-  Comment(
-      {required this.author,
-      required this.comment,
-      required this.likes,
-      required this.liked});
+  Comment({
+    required this.postId,
+    required this.author,
+    required this.comment,
+    required this.postedAt,
+    required this.likes,
+  });
 
   @override
   State<Comment> createState() => _CommentState();
@@ -32,7 +36,8 @@ class _CommentState extends State<Comment> {
       //margin: EdgeInsets.symmetric(vertical: 0),
       padding: EdgeInsets.only(top: padding, left: padding, right: padding),
       child: Card(
-        color: Color.fromRGBO(15, 15, 16, 1),
+        elevation: 0,
+        color: Color.fromRGBO(32, 32, 33, 1),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -62,99 +67,101 @@ class _CommentState extends State<Comment> {
               ],
             ),
             //const SizedBox(width: 8),
-            Align(alignment:Alignment.centerLeft, child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(height: 4),
-                Text(
-                  textAlign: TextAlign.left,
-                  widget.comment,
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
+            Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Row(children: [
-                      Text(
-                        "20 minutes ago",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.grey[500],
-                        ),
+                    const SizedBox(height: 4),
+                    Text(
+                      textAlign: TextAlign.left,
+                      widget.comment,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
                       ),
-                      Padding(
-                          padding: EdgeInsets.only(left: 18),
-                          child: Icon(
-                            Icons.circle,
-                            size: 4,
-                            color: Colors.grey[600],
-                          ))
-                    ]),
-                    Padding(
-                      padding: EdgeInsets.only(left: 0),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          splashFactory: NoSplash.splashFactory,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            widget.liked = !widget.liked;
-                            widget.liked ? widget.likes++ : widget.likes--;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            widget.liked
-                                ? ShaderMask(
-                                    shaderCallback: (Rect bounds) {
-                                      return LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Color.fromRGBO(166, 124, 0, 1),
-                                          Color.fromRGBO(255, 191, 0, 1),
-                                          Color.fromRGBO(255, 220, 115, 1),
-                                        ],
-                                      ).createShader(bounds);
-                                    },
-                                    child: Icon(
-                                      Icons.favorite,
-                                      color: Colors.white,
-                                      size: 16,
-                                    ),
-                                  )
-                                : Icon(
-                                    Icons.favorite_border_outlined,
-                                    size: 16,
-                                    color: Color.fromRGBO(195, 197, 200, 1),
-                                  ),
-                            const SizedBox(width: 3),
-                            Text(
-                              widget.likes.toString(),
-                              style: TextStyle(
-                                color: Color.fromRGBO(195, 197, 200, 1),
-                                fontFamily: 'Inter',
-                                fontSize: 12,
-                              ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Row(children: [
+                          Text(
+                            "20 minutes ago",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey[500],
                             ),
-                          ],
-                        ),
-                      ),
-                    )
-                    /////////
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(left: 18),
+                              child: Icon(
+                                Icons.circle,
+                                size: 4,
+                                color: Colors.grey[600],
+                              ))
+                        ]),
+                        Padding(
+                          padding: EdgeInsets.only(left: 0),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              splashFactory: NoSplash.splashFactory,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                widget.liked = !widget.liked;
+                                widget.liked ? widget.likes++ : widget.likes--;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                widget.liked
+                                    ? ShaderMask(
+                                        shaderCallback: (Rect bounds) {
+                                          return LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              Color.fromRGBO(166, 124, 0, 1),
+                                              Color.fromRGBO(255, 191, 0, 1),
+                                              Color.fromRGBO(255, 220, 115, 1),
+                                            ],
+                                          ).createShader(bounds);
+                                        },
+                                        child: Icon(
+                                          Icons.favorite,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.favorite_border_outlined,
+                                        size: 16,
+                                        color: Color.fromRGBO(195, 197, 200, 1),
+                                      ),
+                                const SizedBox(width: 3),
+                                Text(
+                                  widget.likes.toString(),
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(195, 197, 200, 1),
+                                    fontFamily: 'Inter',
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                        /////////
+                      ],
+                    ),
                   ],
-                ),
-              ],
-            )),////
+                )), ////
           ],
         ),
       ),
