@@ -57,7 +57,7 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
           Expanded(
             child: TextField(
               onSubmitted: (inputValue) {
-                if (inputValue.isEmpty) {
+                if (_textEditingController.text.isEmpty) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -76,14 +76,10 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
                     },
                   );
                 } else {
-                  comments.insert(
-                      0,
-                      Comment(
-                          author: "Youssef Saad",
-                          comment: inputValue,
-                          likes: 0,
-                          liked: false));
-                  _textEditingController.clear();
+                  addCommentToPost(widget.postId, _textEditingController.text);
+                  setState(() {
+                    _textEditingController.clear();
+                  });
                 }
               },
               controller: _textEditingController,
