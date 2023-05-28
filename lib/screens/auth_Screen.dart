@@ -115,10 +115,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginORsignup() async {
-    var email = _emailController.text.trim();
-    var password = _passwordController.text.trim();
-    var username = _usernameController.text.trim();
-    UserCredential authResult;
     try {
       if (authenticationMode == 1) // sign up
       {
