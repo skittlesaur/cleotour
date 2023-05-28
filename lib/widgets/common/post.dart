@@ -15,6 +15,7 @@ class Post extends StatefulWidget {
   int likes;
   String postedAt;
   String imageUrl;
+  String category;
 
   Post(
       {required this.postId,
@@ -24,7 +25,8 @@ class Post extends StatefulWidget {
       required this.location,
       required this.likes,
       required this.postedAt,
-      required this.imageUrl});
+      required this.imageUrl,
+      required this.category});
 
   @override
   State<Post> createState() => _PostState();
@@ -65,7 +67,7 @@ class _PostState extends State<Post> {
         color: Color.fromRGBO(32, 32, 33, 1),
         borderRadius: BorderRadius.circular(15),
       ),
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       padding: EdgeInsets.only(top: padding, left: padding, right: padding),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -96,7 +98,7 @@ class _PostState extends State<Post> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
-                        child: Text("#Beach",
+                        child: Text('#' + widget.category,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'Inter',
@@ -139,15 +141,16 @@ class _PostState extends State<Post> {
           height: screenWidth * 0.02,
         ),
         Container(
+            alignment: Alignment.centerLeft,
             child: Text(
-          widget.body,
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'Inter',
-              fontSize: 15,
-              height: 1.3),
-        )),
+              widget.body,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Inter',
+                  fontSize: 15,
+                  height: 1.3),
+            )),
         SizedBox(
           height: screenWidth * 0.02,
         ),
