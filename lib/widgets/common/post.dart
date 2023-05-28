@@ -94,12 +94,15 @@ class _PostState extends State<Post> {
                             fontWeight: FontWeight.w500),
                         textAlign: TextAlign.left,
                       ),
-                      Text("#Beach",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Inter',
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500))
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text("#Beach",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Inter',
+                                fontSize: 10,
+                                fontWeight: FontWeight.w300)),
+                      )
                     ],
                   ),
                   SizedBox(height: 5),
