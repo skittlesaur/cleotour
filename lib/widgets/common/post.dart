@@ -3,9 +3,21 @@
 import 'package:cleotour/widgets/common/addCommentWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:cleotour/widgets/common/comment.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class Post extends StatefulWidget {
-  const Post({Key? key}) : super(key: key);
+  String body;
+  String location;
+  int likes;
+  String postedAt;
+  String imageUrl;
+
+  Post(
+      {required this.body,
+      required this.location,
+      required this.likes,
+      required this.postedAt,
+      required this.imageUrl});
 
   @override
   State<Post> createState() => _PostState();
@@ -13,7 +25,27 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   bool liked = false;
-  int likes = 1000000000;
+  final _storage = FirebaseStorage.instance;
+  String? downloadURL;
+
+  String formatTimestamp(String timestamp) {
+    var difference = DateTime.now().difference(DateTime.parse(timestamp));
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ago';
+    } else {
+      return 'just now';
+    }
+  }
+
+  Future<String> downloadFile() async {
+    String downloadURL = await _storage.ref(widget.imageUrl).getDownloadURL();
+    return downloadURL;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +76,7 @@ class _PostState extends State<Post> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'El-Youm 7',
+                    'Placeholder',
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Inter',
@@ -63,7 +95,7 @@ class _PostState extends State<Post> {
                       width: 1,
                     ),
                     Text(
-                      'Yasmeen 1, New Cairo',
+                      widget.location,
                       style: TextStyle(
                         color: Colors.grey[500],
                         fontFamily: 'Inter',
@@ -76,7 +108,7 @@ class _PostState extends State<Post> {
             ],
           ),
           Text(
-            '2 hours ago',
+            formatTimestamp(widget.postedAt),
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.grey[500], fontFamily: 'Inter', fontSize: 12),
@@ -85,14 +117,16 @@ class _PostState extends State<Post> {
         SizedBox(
           height: screenWidth * 0.02,
         ),
-        const Text(
-          'Finally the most handsome man was spotted in EGYPPPTTT!!!! 🇪🇬🌉',
+        Container(
+            child: Text(
+          widget.body,
+          textAlign: TextAlign.left,
           style: TextStyle(
               color: Colors.white,
               fontFamily: 'Inter',
               fontSize: 15,
               height: 1.3),
-        ),
+        )),
         SizedBox(
           height: screenWidth * 0.02,
         ),
@@ -100,17 +134,27 @@ class _PostState extends State<Post> {
             onDoubleTap: () {
               setState(() {
                 liked = !liked;
-                liked ? likes++ : likes--;
+                liked ? widget.likes++ : widget.likes--;
               });
             },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Image.network(
-                'https://media.licdn.com/dms/image/D4D03AQGmMdzSofuBQA/profile-displayphoto-shrink_800_800/0/1665876534705?e=1690416000&v=beta&t=sTyRFK17UiNNzfEftuBSkrBU_utoNv5jghaQfCDx3_M',
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            )),
+            child: FutureBuilder(
+                future: downloadFile(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Icon(Icons.error, size: 100);
+                  } else {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Image.network(
+                        snapshot.data!,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }
+                })),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -120,13 +164,11 @@ class _PostState extends State<Post> {
                   padding: EdgeInsets.only(top: 15, bottom: 15),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  splashFactory: NoSplash.splashFactory
-                  // enableFeedback: false,
-                  ),
+                  splashFactory: NoSplash.splashFactory),
               onPressed: () {
                 setState(() {
                   liked = !liked;
-                  liked ? likes++ : likes--;
+                  liked ? widget.likes++ : widget.likes--;
                 });
               },
               child: Row(
@@ -159,7 +201,7 @@ class _PostState extends State<Post> {
                     height: 0,
                     width: 5,
                   ),
-                  Text(likes.toString(),
+                  Text(widget.likes.toString(),
                       style: TextStyle(
                           color: Color.fromRGBO(195, 197, 200, 1),
                           fontFamily: 'Inter',
@@ -234,12 +276,14 @@ class _PostState extends State<Post> {
                       fontWeight: FontWeight.w500)),
               Expanded(
                   child: ListView.builder(
-                itemCount: comments.length, // Replace with the actual number of comments
+                itemCount: comments
+                    .length, // Replace with the actual number of comments
                 itemBuilder: (BuildContext context, int index) {
                   Comment comment = comments[index];
                   return ListTile(title: comment);
                 },
-              )), AddCommentWidget()
+              )),
+              AddCommentWidget()
             ]));
       },
     );
