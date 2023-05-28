@@ -16,15 +16,16 @@ class Post extends StatefulWidget {
   String postedAt;
   String imageUrl;
 
-  Post(
-      {required this.postId,
-      required this.posterId,
-      required this.posterUserName,
-      required this.body,
-      required this.location,
-      required this.likes,
-      required this.postedAt,
-      required this.imageUrl});
+  Post({
+    required this.postId,
+    required this.posterId,
+    required this.posterUserName,
+    required this.body,
+    required this.location,
+    required this.likes,
+    required this.postedAt,
+    required this.imageUrl,
+  });
 
   @override
   State<Post> createState() => _PostState();
