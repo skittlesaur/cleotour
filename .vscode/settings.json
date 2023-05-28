@@ -1,3 +1,4 @@
 {
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "cmake.sourceDirectory": "C:/Momen/University/3rd Year/2nd Semester/Software Mobile Development/Projects/cleotour/cleotour/windows/flutter"
 }
