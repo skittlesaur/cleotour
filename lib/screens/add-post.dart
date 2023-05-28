@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../auth.dart';
 
 class AddPostScreen extends StatefulWidget {
   @override
@@ -39,7 +40,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
       var newDocRef = await _postsCollection.doc();
 
       await newDocRef.set({
-        'id': newDocRef.id,
+        'postId': newDocRef.id,
+        'posterId': Auth().getCurrentUser()?.uid,
+        'posterUserName': Auth().getCurrentUser()?.displayName,
         'body': _postBodyController.text,
         'postedAt': DateTime.now().toLocal().toString(),
         'location': _locationController.text,

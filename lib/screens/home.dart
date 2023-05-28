@@ -35,7 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     var document = myDocuments[index].data() as Map;
 
                     return Post(
-                        id: document['id'],
+                        postId: document['postId'],
+                        posterId: document['posterId'],
+                        posterUserName: document['posterUserName'],
                         body: document['body'],
                         location: document['location'],
                         likes: document['likes'],
