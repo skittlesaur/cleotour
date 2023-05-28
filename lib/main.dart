@@ -2,11 +2,15 @@ import 'package:cleotour/screens/account.dart';
 import 'package:cleotour/screens/favorites.dart';
 import 'package:cleotour/widgets/bottom-navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-import 'screens/explore.dart';
+import 'screens/add-post.dart';
 import 'screens/home.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 
@@ -19,7 +23,7 @@ class _MyAppState extends State<MyApp> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     HomeScreen(),
-    ExploreScreen(),
+    AddPostScreen(),
     FavoritesScreen(),
     AccountScreen(),
   ];
