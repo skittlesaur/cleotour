@@ -1,3 +1,4 @@
+import 'package:cleotour/auth.dart';
 import 'package:cleotour/screens/account.dart';
 import 'package:cleotour/screens/auth_Screen.dart';
 import 'package:cleotour/screens/favorites.dart';
@@ -26,7 +27,7 @@ class _MyAppState extends State<MyApp> {
     HomeScreen(),
     AddPostScreen(),
     FavoritesScreen(),
-    LoginScreen(),
+    (Auth().getCurrentUser() == null) ? LoginScreen() : AccountScreen(),
   ];
 
   @override
@@ -35,7 +36,7 @@ class _MyAppState extends State<MyApp> {
       title: 'CleoTour',
       home: Scaffold(
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            padding: const EdgeInsets.symmetric(horizontal: 0),
             child: IndexedStack(
               index: _currentIndex,
               children: _screens,

@@ -1,3 +1,5 @@
+import 'package:cleotour/auth.dart';
+import 'package:cleotour/screens/auth_Screen.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -6,7 +8,18 @@ class AccountScreen extends StatelessWidget {
     return Scaffold(
         body: SafeArea(
       child: Column(
-        children: [Text('account')],
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('account'),
+          ElevatedButton(
+              onPressed: () {
+                Auth().signOut();
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
+              },
+              child: Text('signout'))
+        ],
       ),
     ));
   }
