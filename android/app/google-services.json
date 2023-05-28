@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "277688353042",
+    "firebase_url": "https://cleotour-8bd53-default-rtdb.firebaseio.com",
+    "project_id": "cleotour-8bd53",
+    "storage_bucket": "cleotour-8bd53.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:277688353042:android:95f586db4aa1556a3a33cb",
+        "android_client_info": {
+          "package_name": "com.example.cleotour"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBha9BBSHOLFjkIBuKJOCinYYWCOqUV2Gk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
