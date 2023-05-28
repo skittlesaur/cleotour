@@ -34,9 +34,12 @@ class _CommentState extends State<Comment> {
       child: Card(
         color: Color.fromRGBO(15, 15, 16, 1),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const CircleAvatar(
                   backgroundImage: AssetImage('assets/image.png'),
@@ -46,6 +49,7 @@ class _CommentState extends State<Comment> {
                   radius: 18,
                   backgroundColor: Color.fromRGBO(32, 32, 33, 1),
                 ),
+                SizedBox(width: 6),
                 Text(
                   widget.author,
                   style: TextStyle(
@@ -54,15 +58,17 @@ class _CommentState extends State<Comment> {
                     color: Colors.white,
                   ),
                 ),
-                //SizedBox(height: 100)
+                SizedBox(height: 45)
               ],
             ),
             //const SizedBox(width: 8),
-            Align(child: Column(
-              //crossAxisAlignment: CrossAxisAlignment.start,
+            Align(alignment:Alignment.centerLeft, child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const SizedBox(height: 4),
                 Text(
+                  textAlign: TextAlign.left,
                   widget.comment,
                   style: TextStyle(
                     fontFamily: 'Inter',
