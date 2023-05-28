@@ -1,4 +1,5 @@
 import 'package:cleotour/screens/account.dart';
+import 'package:cleotour/screens/auth_Screen.dart';
 import 'package:cleotour/screens/favorites.dart';
 import 'package:cleotour/widgets/bottom-navigation.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _MyAppState extends State<MyApp> {
     HomeScreen(),
     AddPostScreen(),
     FavoritesScreen(),
-    AccountScreen(),
+    LoginScreen(),
   ];
 
   @override

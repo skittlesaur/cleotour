@@ -1,8 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-import 'dart:convert';
 import 'package:cleotour/widgets/add-post/image-input.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddPostScreen extends StatefulWidget {
   @override
@@ -10,10 +13,36 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
+  String? imagePath;
+  final _storage = FirebaseStorage.instance;
+  final _postsCollection = FirebaseFirestore.instance.collection('Posts');
+
   final _postBodyController = TextEditingController();
-  final url = Uri.parse(
-      'https://cleotour-8bd53-default-rtdb.firebaseio.com/posts.json');
-  String postBody = '';
+  final _locationController = TextEditingController();
+
+  void setImage(String imagePath2) {
+    setState(() {
+      imagePath = imagePath2;
+    });
+  }
+
+  Future uploadPost(String? imagePath) async {
+    print(imagePath);
+    if (imagePath != null) {
+      final uuid = Uuid();
+      final ref = _storage.ref().child('images/${uuid.v4()}');
+      String imageUrl = ref.fullPath;
+      final uploadTask = ref.putFile(File(imagePath));
+
+      await _postsCollection.doc().set({
+        'body': _postBodyController.text,
+        'postedAt': DateTime.now().toLocal().toString(),
+        'location': _locationController.text,
+        'imageUrl': imageUrl,
+        'likes': 0,
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,19 +67,24 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    ImageInput(),
+                    TextField(
+                      decoration: InputDecoration(
+                          hintText: 'Location', border: OutlineInputBorder()),
+                      controller: _locationController,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ImageInput(setImage: setImage),
                     SizedBox(
                       height: 10,
                     ),
                     MaterialButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        await uploadPost(imagePath);
                         setState(() {
-                          http.post(url,
-                              body: json.encode({
-                                'body': _postBodyController.text,
-                                'likes': 0
-                              }));
                           _postBodyController.text = '';
+                          _locationController.text = '';
                         });
                       },
                       color: Color.fromRGBO(255, 220, 115, 1),
@@ -69,28 +103,3 @@ class _AddPostScreenState extends State<AddPostScreen> {
     )));
   }
 }
-
-// Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           TextFormField(
-//               controller: _textController,
-//               decoration: InputDecoration(
-//                   hintText: 'What\'s new?', border: OutlineInputBorder())),
-//           MaterialButton(
-//             onPressed: () {
-//               setState(() {
-//                 http.post(url,
-//                     body: json
-//                         .encode({'body': _textController.text, 'likes': 0}));
-//                 _textController.text = '';
-//               });
-//             },
-//             color: Color.fromRGBO(255, 220, 115, 1),
-//             child: Text(
-//               'Post',
-//               style: TextStyle(color: Colors.white),
-//             ),
-//           )
-//         ],
-//       )
