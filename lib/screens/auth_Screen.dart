@@ -118,10 +118,28 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       if (authenticationMode == 1) // sign up
       {
-        await register();
+        if (_emailController.text.isEmpty ||
+            _passwordController.text.isEmpty ||
+            _usernameController.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Please fill in all fields.'),
+            ),
+          );
+        } else {
+          await register();
+        }
       } else //log in
       {
-        await signIn();
+        if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Please fill in all fields.'),
+            ),
+          );
+        } else {
+          await signIn();
+        }
       }
     } catch (err) {
       debugPrint(err.toString());

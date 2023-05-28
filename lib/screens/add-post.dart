@@ -81,11 +81,22 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     ),
                     MaterialButton(
                       onPressed: () async {
-                        await uploadPost(imagePath);
-                        setState(() {
-                          _postBodyController.text = '';
-                          _locationController.text = '';
-                        });
+                        if (_postBodyController.text.isEmpty ||
+                            _locationController.text.isEmpty ||
+                            imagePath == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'Please fill in all fields and upload an image.'),
+                            ),
+                          );
+                        } else {
+                          await uploadPost(imagePath);
+                          setState(() {
+                            _postBodyController.text = '';
+                            _locationController.text = '';
+                          });
+                        }
                       },
                       color: Color.fromRGBO(255, 220, 115, 1),
                       child: Text(

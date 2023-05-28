@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'comment.dart';
 
 List<Comment> comments = [
@@ -37,7 +38,6 @@ List<Comment> comments = [
 TextEditingController _textEditingController = TextEditingController();
 String inputValue = _textEditingController.text;
 
-
 class AddCommentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,36 @@ class AddCommentWidget extends StatelessWidget {
           SizedBox(width: 8.0),
           Expanded(
             child: TextField(
-              onSubmitted: (inputValue) {comments.insert(0, Comment(author: "Youssef Saad", comment: inputValue, likes: 0, liked: false));},
+              onSubmitted: (inputValue) {
+                if (inputValue.isEmpty) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Error'),
+                        content: Text('Please enter a comment.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context); // Close the dialog
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  comments.insert(
+                      0,
+                      Comment(
+                          author: "Youssef Saad",
+                          comment: inputValue,
+                          likes: 0,
+                          liked: false));
+                  _textEditingController.clear();
+                }
+              },
               controller: _textEditingController,
               decoration: InputDecoration(
                   hintText: 'Add comment...',
