@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class Comment extends StatefulWidget {
   String postId;
-  String author;
+  String authorId;
+  String authorUserName;
   String comment;
   String postedAt;
   int likes;
@@ -12,7 +13,8 @@ class Comment extends StatefulWidget {
 
   Comment({
     required this.postId,
-    required this.author,
+    required this.authorId,
+    required this.authorUserName,
     required this.comment,
     required this.postedAt,
     required this.likes,
@@ -27,6 +29,20 @@ class _CommentState extends State<Comment> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double padding = screenWidth * 0.03;
+
+    String formatTimestamp(String timestamp) {
+      var difference = DateTime.now().difference(DateTime.parse(timestamp));
+
+      if (difference.inDays > 0) {
+        return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
+      } else if (difference.inHours > 0) {
+        return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
+      } else if (difference.inMinutes > 0) {
+        return '${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ago';
+      } else {
+        return 'just now';
+      }
+    }
 
     return Container(
       width: screenWidth,
@@ -56,7 +72,7 @@ class _CommentState extends State<Comment> {
                 ),
                 SizedBox(width: 6),
                 Text(
-                  widget.author,
+                  widget.authorUserName,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -89,7 +105,7 @@ class _CommentState extends State<Comment> {
                       children: [
                         Row(children: [
                           Text(
-                            "20 minutes ago",
+                            formatTimestamp(widget.postedAt),
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,

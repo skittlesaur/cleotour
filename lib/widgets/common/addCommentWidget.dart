@@ -25,6 +25,7 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
       await newCommentRef.set({
         'postId': newCommentRef.id,
         'commenterId': Auth().getCurrentUser()?.uid,
+        'commenterUserName': Auth().getCurrentUser()?.displayName,
         'comment': comment,
         'postedAt': DateTime.now().toLocal().toString(),
         'likes': 0
@@ -101,36 +102,3 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
     ));
   }
 }
-
-// List<Comment> comments = [
-//   Comment(
-//       author: "Youssef Saad",
-//       comment:
-//           "If vibrant colors, trendy cafes, and stunning views of the Nile are your thing, then Zamalek is the perfect place to explore. Just don't forget your sunglasses, you might need them to shield your eyes from all the colorful buildings! 😎🌈",
-//       likes: 0,
-//       liked: false),
-//   Comment(
-//       author: "Youssef Saad",
-//       comment:
-//           "If vibrant colors, trendy cafes, and stunning views of the Nile are your thing, then Zamalek is the perfect place to explore. Just don't forget your sunglasses, you might need them to shield your eyes from all the colorful buildings! 😎🌈",
-//       likes: 0,
-//       liked: false),
-//   Comment(
-//       author: "Youssef Saad",
-//       comment:
-//           "If vibrant colors, trendy cafes, and stunning views of the Nile are your thing, then Zamalek is the perfect place to explore. Just don't forget your sunglasses, you might need them to shield your eyes from all the colorful buildings! 😎🌈",
-//       likes: 0,
-//       liked: false),
-//   Comment(
-//       author: "Youssef Saad",
-//       comment:
-//           "If vibrant colors, trendy cafes, and stunning views of the Nile are your thing, then Zamalek is the perfect place to explore. Just don't forget your sunglasses, you might need them to shield your eyes from all the colorful buildings! 😎🌈",
-//       likes: 0,
-//       liked: false),
-//   Comment(
-//       author: "Youssef Saad",
-//       comment:
-//           "If vibrant colors, trendy cafes, and stunning views of the Nile are your thing, then Zamalek is the perfect place to explore. Just don't forget your sunglasses, you might need them to shield your eyes from all the colorful buildings! 😎🌈",
-//       likes: 0,
-//       liked: false)
-// ];

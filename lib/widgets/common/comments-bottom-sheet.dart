@@ -95,7 +95,8 @@ class _CommentsPageState extends State<CommentsPage> {
                     return Column(children: [
                       Comment(
                         postId: comment['postId'],
-                        author: comment['commenterId'],
+                        authorId: comment['commenterId'],
+                        authorUserName: comment['commenterUserName'],
                         comment: comment['comment'],
                         postedAt: comment['postedAt'],
                         likes: comment['likes'],
