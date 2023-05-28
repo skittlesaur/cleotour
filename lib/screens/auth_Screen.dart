@@ -1,11 +1,16 @@
 import 'dart:convert';
 import 'package:cleotour/auth.dart';
+import 'package:cleotour/screens/account.dart';
+import 'package:cleotour/screens/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
+  Function(bool) updateAuthenticationStatus;
   @override
+  LoginScreen({required this.updateAuthenticationStatus});
+
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -15,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final authenticationInstance = FirebaseAuth.instance;
   String? errorMessage = '';
+
   var authenticationMode = 0;
   void toggleAuthMode() {
     if (authenticationMode == 0) {
@@ -153,6 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Colors.black,
                                 child: TextField(
                                   controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
                                   style: TextStyle(color: Colors.grey),
                                   decoration: InputDecoration(
                                       labelText: "Enter an Email",
@@ -192,6 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Colors.black,
                                 child: TextField(
                                   controller: _passwordController,
+                                  obscureText: true,
                                   style: TextStyle(color: Colors.grey),
                                   decoration: InputDecoration(
                                       labelText: "Enter a password",
@@ -281,6 +289,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         } else {
           await register();
+          widget.updateAuthenticationStatus(true);
         }
       } else //log in
       {
@@ -291,7 +300,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         } else {
-          await signIn();
+          signIn();
+          widget.updateAuthenticationStatus(true);
         }
       }
     } catch (err) {
