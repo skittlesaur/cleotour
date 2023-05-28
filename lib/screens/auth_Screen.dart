@@ -1,16 +1,13 @@
-import 'dart:convert';
 import 'package:cleotour/auth.dart';
-import 'package:cleotour/screens/account.dart';
-import 'package:cleotour/screens/home.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
   Function(bool) updateAuthenticationStatus;
   @override
-  LoginScreen({required this.updateAuthenticationStatus});
+  LoginScreen({super.key, required this.updateAuthenticationStatus});
 
+  @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -64,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         body: Container(
             height: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 image: DecorationImage(
               image: NetworkImage("https://i.imgur.com/9avScxF.png"),
               fit: BoxFit.cover,
@@ -72,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
             width: double.infinity,
             child: ShaderMask(
               shaderCallback: (Rect bounds) {
-                return LinearGradient(
+                return const LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [Colors.black, Colors.transparent],
@@ -82,15 +79,15 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                   color: Colors.black,
                   child: Container(
-                    margin: EdgeInsets.only(top: 200),
+                    margin: const EdgeInsets.only(top: 200),
                     child: Container(
                       margin: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: SingleChildScrollView(
-                        physics: ClampingScrollPhysics(),
+                        physics: const ClampingScrollPhysics(),
                         child: Column(
                           children: [
-                            Text(
+                            const Text(
                               "Cleotours",
                               style: TextStyle(
                                   fontWeight: FontWeight.w600,
@@ -103,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     const EdgeInsets.only(bottom: 8, top: 20),
                                 child: Container(
                                   width: 400,
-                                  child: Text(
+                                  child: const Text(
                                     "Username",
                                     textAlign: TextAlign.left,
                                     style: TextStyle(color: Colors.white),
@@ -117,20 +114,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   color: Colors.black,
                                   child: TextField(
                                     controller: _usernameController,
-                                    style: TextStyle(color: Colors.grey),
+                                    style: const TextStyle(color: Colors.grey),
                                     decoration: InputDecoration(
                                         labelText: "Enter a username",
-                                        labelStyle: TextStyle(
+                                        labelStyle: const TextStyle(
                                           color: Colors.grey,
                                         ),
                                         enabledBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
+                                            borderSide: const BorderSide(
                                                 width: 1,
                                                 color: Color.fromRGBO(
                                                     47, 47, 48, 1)),
                                             borderRadius:
                                                 BorderRadius.circular(10)),
-                                        focusedBorder: OutlineInputBorder(
+                                        focusedBorder: const OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 width: 1, color: Colors.grey)),
                                         floatingLabelBehavior:
@@ -145,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     const EdgeInsets.only(bottom: 8, top: 20),
                                 child: Container(
                                   width: 400,
-                                  child: Text(
+                                  child: const Text(
                                     "Email",
                                     textAlign: TextAlign.left,
                                     style: TextStyle(color: Colors.white),
@@ -160,20 +157,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: TextField(
                                   controller: _emailController,
                                   keyboardType: TextInputType.emailAddress,
-                                  style: TextStyle(color: Colors.grey),
+                                  style: const TextStyle(color: Colors.grey),
                                   decoration: InputDecoration(
                                       labelText: "Enter an Email",
-                                      labelStyle: TextStyle(
+                                      labelStyle: const TextStyle(
                                         color: Colors.grey,
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
+                                          borderSide: const BorderSide(
                                               width: 1,
                                               color: Color.fromRGBO(
                                                   47, 47, 48, 1)),
                                           borderRadius:
                                               BorderRadius.circular(10)),
-                                      focusedBorder: OutlineInputBorder(
+                                      focusedBorder: const OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1, color: Colors.grey)),
                                       floatingLabelBehavior:
@@ -186,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   const EdgeInsets.only(bottom: 8, top: 20),
                               child: Container(
                                 width: 400,
-                                child: Text(
+                                child: const Text(
                                   "Password",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(color: Colors.white),
@@ -200,20 +197,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: TextField(
                                   controller: _passwordController,
                                   obscureText: true,
-                                  style: TextStyle(color: Colors.grey),
+                                  style: const TextStyle(color: Colors.grey),
                                   decoration: InputDecoration(
                                       labelText: "Enter a password",
-                                      labelStyle: TextStyle(
+                                      labelStyle: const TextStyle(
                                         color: Colors.grey,
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
+                                          borderSide: const BorderSide(
                                               width: 1,
                                               color: Color.fromRGBO(
                                                   47, 47, 48, 1)),
                                           borderRadius:
                                               BorderRadius.circular(10)),
-                                      focusedBorder: OutlineInputBorder(
+                                      focusedBorder: const OutlineInputBorder(
                                           borderSide: BorderSide(
                                               width: 1, color: Colors.grey)),
                                       floatingLabelBehavior:
@@ -223,13 +220,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             Container(
                               width: 400,
-                              padding: EdgeInsets.only(top: 20),
+                              padding: const EdgeInsets.only(top: 20),
                               child: OutlinedButton(
                                 style: OutlinedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  side: BorderSide(
+                                  side: const BorderSide(
                                     color: Colors.amber,
                                     width: 1,
                                   ),
@@ -283,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
             _passwordController.text.isEmpty ||
             _usernameController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Please fill in all fields.'),
             ),
           );
@@ -295,7 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
       {
         if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Please fill in all fields.'),
             ),
           );

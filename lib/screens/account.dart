@@ -1,10 +1,9 @@
 import 'package:cleotour/auth.dart';
-import 'package:cleotour/screens/auth_Screen.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
   Function(bool) updateAuthenticationStatus;
-  AccountScreen({required this.updateAuthenticationStatus});
+  AccountScreen({super.key, required this.updateAuthenticationStatus});
 
   void signOutAndChangeIndex() {
     Auth().signOut();
@@ -19,10 +18,10 @@ class AccountScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('account'),
+            const Text('account'),
             ElevatedButton(
               onPressed: signOutAndChangeIndex,
-              child: Text('signout'),
+              child: const Text('signout'),
             ),
           ],
         ),
