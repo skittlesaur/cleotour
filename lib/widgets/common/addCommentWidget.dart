@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../auth.dart';
+import 'alertDialogWidget.dart';
 
 class AddCommentWidget extends StatefulWidget {
   String postId;
@@ -11,6 +12,9 @@ class AddCommentWidget extends StatefulWidget {
 }
 
 class _AddCommentWidgetState extends State<AddCommentWidget> {
+  dynamic user = Auth().getCurrentUser();
+  dynamic id = Auth().getCurrentUser()?.uid;
+
   Future<void> addCommentToPost(String postId, String comment) async {
     try {
       CollectionReference _commentsCollection = FirebaseFirestore.instance
@@ -56,7 +60,15 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
           Expanded(
             child: TextField(
               onSubmitted: (inputValue) {
-                if (_textEditingController.text.isEmpty) {
+                if (id == null || user == null) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialogWidget(title: "You are not signed in", content: "Please sign in to leave a comment");
+                    },
+                  );
+                  return;
+                } else if (_textEditingController.text.isEmpty) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {

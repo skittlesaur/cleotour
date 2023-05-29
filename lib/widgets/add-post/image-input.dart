@@ -36,21 +36,31 @@ class _ImageInputState extends State<ImageInput> {
             width: double.infinity,
             height: 200,
             child: _image == null
-                ? const Icon(Icons.image, size: 100)
+                ? const Icon(color: Colors.amber, Icons.image, size: 100)
                 : Image.file(File(_image!.path))),
         const SizedBox(
-          width: 10,
+          height: 15,
         ),
-        MaterialButton(
-          onPressed: () async {
-            await getImages();
-          },
-          color: Color.fromRGBO(12, 12, 12, 1),
-          child: const Text(
-            'Pick an image',
-            style: TextStyle(color: Colors.white),
-          ),
-        )
+        SizedBox(
+            height: 50,
+            width: 122,
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  side: BorderSide(
+                    color: Colors.amber,
+                    width: 1,
+                  )),
+              onPressed: () async {
+                await getImages();
+              },
+              child: const Text(
+                'Pick an image',
+                style: TextStyle(color: Colors.amber),
+              ),
+            ))
       ],
     );
   }
