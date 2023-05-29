@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class TrendingCard extends StatefulWidget {
   String postId;
@@ -10,34 +12,56 @@ class TrendingCard extends StatefulWidget {
   String postedAt;
   String imageUrl;
   String category;
+  String avgRating;
 
-  TrendingCard({
-    required this.postId,
-    required this.posterId,
-    required this.posterUserName,
-    required this.body,
-    required this.location,
-    required this.likes,
-    required this.postedAt,
-    required this.imageUrl,
-    required this.category,
-  });
+  TrendingCard(
+      {required this.postId,
+      required this.posterId,
+      required this.posterUserName,
+      required this.body,
+      required this.location,
+      required this.likes,
+      required this.postedAt,
+      required this.imageUrl,
+      required this.category,
+      required this.avgRating});
   @override
   State<TrendingCard> createState() => _TrendingCardState();
 }
 
 class _TrendingCardState extends State<TrendingCard> {
+  final _storage = FirebaseStorage.instance;
+  var img;
+
+  Future<String> downloadFile(String imageUrl) async {
+    String downloadURL = await _storage.ref(imageUrl).getDownloadURL();
+    img = downloadURL;
+    return downloadURL;
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(widget.avgRating);
     return (Container(
       height: 300,
       width: 500,
       child: Stack(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network('https://i.imgur.com/4Kf1fKK.png',
-                height: 250, width: double.infinity, fit: BoxFit.cover),
+          FutureBuilder(
+            future: downloadFile(widget.imageUrl),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Icon(Icons.error, size: 100);
+              } else {
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(snapshot.data!,
+                      height: 250, width: double.infinity, fit: BoxFit.cover),
+                );
+              }
+            },
           ),
           Container(
             padding: EdgeInsets.all(10),
@@ -101,7 +125,8 @@ class _TrendingCardState extends State<TrendingCard> {
                           onPressed: () => print("hello"),
                           icon: Icon(Icons.star,
                               color: Color.fromRGBO(255, 191, 0, 1))),
-                      Text("200", style: TextStyle(color: Colors.white))
+                      Text(widget.avgRating,
+                          style: TextStyle(color: Colors.white))
                     ],
                   )
                 ],

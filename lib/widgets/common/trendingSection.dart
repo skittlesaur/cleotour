@@ -13,7 +13,8 @@ class _TrendingSectionState extends State<TrendingSection> {
   Stream<QuerySnapshot<Object?>> getPosts() {
     return FirebaseFirestore.instance
         .collection("Posts")
-        .orderBy("postedAt", descending: true)
+        .orderBy("averageRating", descending: true)
+        .limit(3)
         .snapshots();
   }
 
@@ -58,6 +59,7 @@ class _TrendingSectionState extends State<TrendingSection> {
                     postedAt: document['postedAt'],
                     imageUrl: document['imageUrl'],
                     category: document['category'],
+                    avgRating: document['averageRating'],
                   );
                 }).toList();
                 return CarouselSlider(
