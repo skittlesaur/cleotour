@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/common/post.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../widgets/common/trendingSection.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -32,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
           child: Column(
         children: [
+          TrendingSection(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
