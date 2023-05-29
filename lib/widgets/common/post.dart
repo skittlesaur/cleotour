@@ -41,6 +41,13 @@ class _PostState extends State<Post> {
     return (Auth().getCurrentUser()?.uid != null);
   }
 
+  storeAverageRatings(int rating) async {
+    await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .set({'averageRating': rating.toString()}, SetOptions(merge: true));
+  }
+
   getRatingsAverage() async {
     var amountOfRatings = await FirebaseFirestore.instance
         .collection('Posts')
@@ -65,8 +72,10 @@ class _PostState extends State<Post> {
     });
 
     if (average == 0) {
+      storeAverageRatings(0);
       return 0;
     } else {
+      storeAverageRatings((average / amountOfRatings).ceil());
       return ((average / amountOfRatings).ceil());
     }
   }
