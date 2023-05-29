@@ -42,15 +42,24 @@ class _PostState extends State<Post> {
   }
 
   void _updateRating(int rating) async {
-    var newDocRef = await FirebaseFirestore.instance
+    var userRatingDoc = await FirebaseFirestore.instance
         .collection('Posts')
         .doc(widget.postId)
         .collection('Ratings')
         .doc(Auth().getCurrentUser()?.uid);
 
-    // print(newDocRef.);
+    print(userRatingDoc.get().then((value) => print(value.data())));
 
-    await newDocRef.set({
+    var amountOfRatings = await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('Ratings')
+        .count()
+        .query;
+
+    print(amountOfRatings);
+
+    await userRatingDoc.set({
       'raterId': Auth().getCurrentUser()?.uid,
       'postId': widget.postId,
       'rating': rating
