@@ -2,6 +2,7 @@ import 'package:cleotour/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../model/post.dart';
 
@@ -16,6 +17,15 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  var Image;
+  final _storage = FirebaseStorage.instance;
+
+  Future<String> downloadFile(String imageUrl) async {
+    String downloadURL = await _storage.ref(imageUrl).getDownloadURL();
+    Image = downloadURL;
+    return downloadURL;
+  }
+
   User? currentUser = Auth().getCurrentUser();
   Post? _openPost;
 
@@ -197,30 +207,48 @@ class _AccountScreenState extends State<AccountScreen> {
                                         mainAxisSpacing: 5),
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
-                                    onTap: () {
-                                      openPost(Post(
-                                        id: snapshot.data!.docs[index].id,
-                                        imageUrl: snapshot.data!.docs[index]
-                                            .get('imageUrl'),
-                                        body: snapshot.data!.docs[index]
-                                            .get('body'),
-                                        userId: snapshot.data!.docs[index]
-                                            .get('posterId'),
-                                        category: snapshot.data!.docs[index]
-                                            .get('category'),
-                                      ));
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage(snapshot
+                                      onTap: () {
+                                        openPost(Post(
+                                          id: snapshot.data!.docs[index].id,
+                                          imageUrl: snapshot.data!.docs[index]
+                                              .get('imageUrl'),
+                                          body: snapshot.data!.docs[index]
+                                              .get('body'),
+                                          userId: snapshot.data!.docs[index]
+                                              .get('posterId'),
+                                          category: snapshot.data!.docs[index]
+                                              .get('category'),
+                                        ));
+                                      },
+                                      child: FutureBuilder(
+                                          future: downloadFile(snapshot
                                               .data!.docs[index]
                                               .get('imageUrl')),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  );
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return Center(
+                                                  child:
+                                                      CircularProgressIndicator());
+                                            } else if (snapshot.hasError) {
+                                              return Icon(Icons.error,
+                                                  size: 100);
+                                            } else {
+                                              return ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          snapshot.data!),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          }));
                                 },
                               );
                             },
@@ -260,8 +288,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     width: 350,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: NetworkImage(
-                                            _openPost!.imageUrl ?? ""),
+                                        image: NetworkImage(Image ?? ""),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -306,3 +333,16 @@ class _AccountScreenState extends State<AccountScreen> {
                 ))));
   }
 }
+
+
+// Container(
+//                                     height: 300,
+//                                     width: 350,
+//                                     decoration: BoxDecoration(
+//                                       image: DecorationImage(
+//                                         image: NetworkImage(
+//                                             _openPost!.imageUrl ?? ""),
+//                                         fit: BoxFit.cover,
+//                                       ),
+//                                     ),
+//                                   ),

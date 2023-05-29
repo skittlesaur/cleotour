@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post extends StatefulWidget {
   String postId;
@@ -275,7 +274,9 @@ class _PostState extends State<Post> {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return AlertDialogWidget(title: "Login required", content: "You must be logged in first");
+                                return AlertDialogWidget(
+                                    title: "Login required",
+                                    content: "You must be logged in first");
                               },
                             );
                           }
