@@ -56,11 +56,10 @@ class _TrendingCardState extends State<TrendingCard> {
               } else {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: CachedNetworkImage(
+                  child: Image.network(
+                    snapshot.data!,
                     height: 250,
                     width: double.infinity,
-                    fit: BoxFit.cover,
-                    imageUrl: snapshot.data!,
                   ),
                 );
               }
