@@ -41,6 +41,16 @@ class _PostState extends State<Post> {
     return (Auth().getCurrentUser()?.uid != null);
   }
 
+  test() async {
+    var amountOfRatings = await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('Ratings')
+        .count()
+        .get()
+        .then((value) => print(value.count));
+  }
+
   void _updateRating(int rating) async {
     var userRatingDoc = await FirebaseFirestore.instance
         .collection('Posts')
@@ -50,14 +60,7 @@ class _PostState extends State<Post> {
 
     print(userRatingDoc.get().then((value) => print(value.data())));
 
-    var amountOfRatings = await FirebaseFirestore.instance
-        .collection('Posts')
-        .doc(widget.postId)
-        .collection('Ratings')
-        .count()
-        .query;
-
-    print(amountOfRatings);
+    // test();
 
     await userRatingDoc.set({
       'raterId': Auth().getCurrentUser()?.uid,
