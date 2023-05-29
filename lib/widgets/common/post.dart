@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../auth.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Post extends StatefulWidget {
   String postId;
@@ -276,8 +277,8 @@ class _PostState extends State<Post> {
                   } else {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(4),
-                      child: Image.network(
-                        snapshot.data!,
+                      child: CachedNetworkImage(
+                        imageUrl: snapshot.data!,
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
