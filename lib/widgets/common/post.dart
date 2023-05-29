@@ -37,6 +37,9 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   int rating = 0;
+  bool checkLoggedIn() {
+    return (Auth().getCurrentUser()?.uid != null);
+  }
   // void initRating() async {
   //   // we use the try catch to get an error in case an error happens with firestore
   //   try {
@@ -58,9 +61,9 @@ class _PostState extends State<Post> {
   // }
 
   // @override
-  // void initState() async {
+  // void initState() {
   //   super.initState();
-  //   initRating();
+  //   print(getRating());
   // }
 
   void _updateRating(int rating) async {
@@ -74,6 +77,45 @@ class _PostState extends State<Post> {
       'raterId': Auth().getCurrentUser()?.uid,
       'postId': widget.postId,
       'rating': rating
+    });
+  }
+
+  Future<int> getRating() async {
+    var snap = await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('Ratings')
+        .doc(Auth().getCurrentUser()?.uid)
+        .get()
+        .then((value) => value.data()?['rating']);
+    return (snap);
+  }
+
+  void avgRating() async {
+    var snaps = await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('Ratings')
+        .snapshots();
+
+    snaps.map((snapshot) {
+      if (snapshot.docs.isEmpty) {
+        print('0'); // Return 0 if no ratings found
+      }
+      double totalRating = 0.0;
+      int count = 0;
+      for (var doc in snapshot.docs) {
+        var data = doc.data();
+        if (data != null && data.containsKey('rating')) {
+          totalRating += (data['rating'] as double);
+          count++;
+        }
+      }
+      if (count > 0) {
+        print(totalRating / count);
+      } else {
+        print("0"); // Return 0 if no valid ratings found
+      }
     });
   }
 
@@ -119,8 +161,8 @@ class _PostState extends State<Post> {
             children: [
               const CircleAvatar(
                 backgroundImage: AssetImage('assets/image.png'),
-                foregroundImage:
-                    NetworkImage('https://shorty-shortener.vercel.app/12oNKo'),
+                // foregroundImage:
+                //     NetworkImage('https://shorty-shortener.vercel.app/12oNKo'),
                 radius: 25,
                 backgroundColor: Color.fromRGBO(32, 32, 33, 1),
               ),
@@ -228,13 +270,46 @@ class _PostState extends State<Post> {
           children: [
             Row(
               children: [
-                RatingWidget(
-                  onRatingSelected: (rating) {
-                    setState(() {
-                      this.rating = rating;
-                      print(rating);
-                      _updateRating(rating);
-                    });
+                FutureBuilder<int>(
+                  future: getRating(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return RatingWidget(
+                        prevRating: snapshot.data ?? 0,
+                        isLoggedIn: checkLoggedIn(),
+                        onRatingSelected: (rating) {
+                          if (checkLoggedIn()) {
+                            setState(() {
+                              this.rating = rating;
+                              print(rating);
+                              _updateRating(rating);
+                            });
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Login Required'),
+                                  content: Text('You must be logged in first'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        },
+                      );
+                    }
                   },
                 ),
                 SizedBox(
