@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-class TrendingCard extends StatelessWidget {
+class TrendingCard extends StatefulWidget {
+  @override
+  State<TrendingCard> createState() => _TrendingCardState();
+}
+
+class _TrendingCardState extends State<TrendingCard> {
   @override
   Widget build(BuildContext context) {
     return (Container(
