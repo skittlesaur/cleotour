@@ -1,10 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:cleotour/widgets/common/addCommentWidget.dart';
 import 'package:cleotour/widgets/common/comments-bottom-sheet.dart';
+import 'package:cleotour/widgets/common/ratings.dart';
 import 'package:flutter/material.dart';
-import 'package:cleotour/widgets/common/comment.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post extends StatefulWidget {
   String postId;
@@ -17,22 +19,64 @@ class Post extends StatefulWidget {
   String imageUrl;
   String category;
 
-  Post(
-      {required this.postId,
-      required this.posterId,
-      required this.posterUserName,
-      required this.body,
-      required this.location,
-      required this.likes,
-      required this.postedAt,
-      required this.imageUrl,
-      required this.category});
+  Post({
+    required this.postId,
+    required this.posterId,
+    required this.posterUserName,
+    required this.body,
+    required this.location,
+    required this.likes,
+    required this.postedAt,
+    required this.imageUrl,
+    required this.category,
+  });
 
   @override
   State<Post> createState() => _PostState();
 }
 
 class _PostState extends State<Post> {
+  int rating = 0;
+  // void initRating() async {
+  //   // we use the try catch to get an error in case an error happens with firestore
+  //   try {
+  //     final ratingSnapshot = await FirebaseFirestore.instance
+  //         .collection('Posts')
+  //         .doc(widget.postId)
+  //         .collection('Rating')
+  //         .get()
+  //         .then((QuerySnapshot QS) {
+  //       QS.docs.forEach((doc) {
+  //         print(doc);
+  //       });
+  //     });
+
+  //     // print(documentSnapshot);
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  // @override
+  // void initState() async {
+  //   super.initState();
+  //   initRating();
+  // }
+
+  void _updateRating(int rating) async {
+    var newDocRef = await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('Ratings')
+        .doc(Auth().getCurrentUser()?.uid);
+
+    await newDocRef.set({
+      'raterId': Auth().getCurrentUser()?.uid,
+      'postId': widget.postId,
+      'rating': rating
+    });
+  }
+
   bool liked = false;
   final _storage = FirebaseStorage.instance;
   String? downloadURL;
@@ -182,56 +226,27 @@ class _PostState extends State<Post> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            TextButton(
-              style: TextButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  padding: EdgeInsets.only(top: 15, bottom: 15),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  splashFactory: NoSplash.splashFactory),
-              onPressed: () {
-                setState(() {
-                  liked = !liked;
-                  liked ? widget.likes++ : widget.likes--;
-                });
-              },
-              child: Row(
-                children: [
-                  (liked
-                      ? ShaderMask(
-                          shaderCallback: (Rect bounds) {
-                            return LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Color.fromRGBO(166, 124, 0, 1),
-                                Color.fromRGBO(255, 191, 0, 1),
-                                Color.fromRGBO(255, 220, 115, 1)
-                              ],
-                            ).createShader(bounds);
-                          },
-                          child: Icon(
-                            Icons.favorite,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        )
-                      : Icon(
-                          Icons.favorite_border_outlined,
-                          size: 20,
-                          color: Color.fromRGBO(195, 197, 200, 1),
-                        )),
-                  SizedBox(
-                    height: 0,
-                    width: 5,
-                  ),
-                  Text(widget.likes.toString(),
-                      style: TextStyle(
-                          color: Color.fromRGBO(195, 197, 200, 1),
-                          fontFamily: 'Inter',
-                          fontSize: 20))
-                ],
-              ),
+            Row(
+              children: [
+                RatingWidget(
+                  onRatingSelected: (rating) {
+                    setState(() {
+                      this.rating = rating;
+                      print(rating);
+                      _updateRating(rating);
+                    });
+                  },
+                ),
+                SizedBox(
+                  height: 0,
+                  width: 5,
+                ),
+                Text(rating.toString(),
+                    style: TextStyle(
+                        color: Color.fromRGBO(195, 197, 200, 1),
+                        fontFamily: 'Inter',
+                        fontSize: 20))
+              ],
             ),
             SizedBox(
               width: 15,
@@ -242,9 +257,7 @@ class _PostState extends State<Post> {
                     padding: EdgeInsets.only(top: 15, bottom: 15),
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    splashFactory: NoSplash.splashFactory
-                    // enableFeedback: false,
-                    ),
+                    splashFactory: NoSplash.splashFactory),
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
