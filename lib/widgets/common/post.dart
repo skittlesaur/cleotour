@@ -48,7 +48,7 @@ class _PostState extends State<Post> {
         .collection('Ratings')
         .doc(Auth().getCurrentUser()?.uid);
 
-        print(newDocRef.);
+    // print(newDocRef.);
 
     await newDocRef.set({
       'raterId': Auth().getCurrentUser()?.uid,
