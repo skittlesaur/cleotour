@@ -122,40 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 ],
               ),
-              // StreamBuilder<QuerySnapshot>(
-              //   stream: getPosts(),
-              //   builder: (context, snapshot) {
-              //     if (snapshot.hasError) {
-              //       return Text("Something went wrong");
-              //     }
-              //
-              //     if (snapshot.connectionState == ConnectionState.waiting) {
-              //       return Center(
-              //         child: CircularProgressIndicator(),
-              //       );
-              //     }
-              //
-              //     return ListView.builder(
-              //       shrinkWrap: true,
-              //       physics: NeverScrollableScrollPhysics(),
-              //       itemCount: snapshot.data!.docs.length,
-              //       itemBuilder: (context, index) {
-              //         return Post(
-              //           postId: snapshot.data!.docs[index].id,
-              //           body: snapshot.data!.docs[index]['body'],
-              //           location: snapshot.data!.docs[index]['location'],
-              //           category: snapshot.data!.docs[index]['category'],
-              //           posterId: snapshot.data!.docs[index]['posterId'],
-              //           posterUserName: snapshot.data!.docs[index]
-              //               ['posterUserName'],
-              //           likes: snapshot.data!.docs[index]['likes'],
-              //           imageUrl: snapshot.data!.docs[index]['imageUrl'],
-              //           postedAt: snapshot.data!.docs[index]['postedAt'],
-              //         );
-              //       },
-              //     );
-              //   },
-              // ),
               Column(
                 children: _posts.map((post) {
                   return Post(
