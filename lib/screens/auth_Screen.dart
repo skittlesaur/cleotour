@@ -62,10 +62,11 @@ class _LoginScreenState extends State<LoginScreen> {
         body: Container(
             height: double.infinity,
             decoration: const BoxDecoration(
+                color: Colors.black,
                 image: DecorationImage(
-              image: NetworkImage("https://i.imgur.com/9avScxF.png"),
-              fit: BoxFit.cover,
-            )),
+                  image: NetworkImage("https://i.imgur.com/9avScxF.png"),
+                  fit: BoxFit.cover,
+                )),
             width: double.infinity,
             child: ShaderMask(
               shaderCallback: (Rect bounds) {

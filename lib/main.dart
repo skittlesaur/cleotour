@@ -105,7 +105,7 @@ class _MyAppState extends State<MyApp> {
                 _isAddingPost
                     ? AddPost(
                         changeAddingPost: changeAddingPost,
-                )
+                      )
                     : Expanded(
                         child: _screens[_currentIndex],
                       ),
