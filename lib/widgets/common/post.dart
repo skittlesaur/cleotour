@@ -41,14 +41,34 @@ class _PostState extends State<Post> {
     return (Auth().getCurrentUser()?.uid != null);
   }
 
-  test() async {
+  getRatingsAverage() async {
     var amountOfRatings = await FirebaseFirestore.instance
         .collection('Posts')
         .doc(widget.postId)
         .collection('Ratings')
         .count()
         .get()
-        .then((value) => print(value.count));
+        .then((value) {
+      return value.count;
+    });
+
+    num average = 0;
+    var ratings = await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('Ratings')
+        .get()
+        .then((value) {
+      for (int i = 0; i < amountOfRatings; i++) {
+        average += value.docs[i].data()['rating'];
+      }
+    });
+
+    if (average == 0) {
+      return 0;
+    } else {
+      return ((average / amountOfRatings).ceil());
+    }
   }
 
   void _updateRating(int rating) async {
@@ -57,10 +77,6 @@ class _PostState extends State<Post> {
         .doc(widget.postId)
         .collection('Ratings')
         .doc(Auth().getCurrentUser()?.uid);
-
-    print(userRatingDoc.get().then((value) => print(value.data())));
-
-    // test();
 
     await userRatingDoc.set({
       'raterId': Auth().getCurrentUser()?.uid,
@@ -279,8 +295,8 @@ class _PostState extends State<Post> {
                           if (checkLoggedIn()) {
                             setState(() {
                               this.rating = rating;
-                              // print(rating);
                               _updateRating(rating);
+                              getRatingsAverage();
                             });
                           } else {
                             showDialog(
@@ -310,11 +326,22 @@ class _PostState extends State<Post> {
                   height: 0,
                   width: 5,
                 ),
-                Text(rating.toString(),
-                    style: TextStyle(
-                        color: Color.fromRGBO(195, 197, 200, 1),
-                        fontFamily: 'Inter',
-                        fontSize: 20))
+                FutureBuilder(
+                  future: getRatingsAverage(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: Text('Loading...'));
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return Text(snapshot.data.toString(),
+                          style: TextStyle(
+                              color: Color.fromRGBO(195, 197, 200, 1),
+                              fontFamily: 'Inter',
+                              fontSize: 20));
+                    }
+                  },
+                ),
               ],
             ),
             SizedBox(
@@ -363,3 +390,9 @@ class _PostState extends State<Post> {
     );
   }
 }
+
+// Text(rating.toString(),
+//                     style: TextStyle(
+//                         color: Color.fromRGBO(195, 197, 200, 1),
+//                         fontFamily: 'Inter',
+//                         fontSize: 20))
