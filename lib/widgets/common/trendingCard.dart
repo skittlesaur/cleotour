@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class TrendingCard extends StatefulWidget {
@@ -57,8 +57,12 @@ class _TrendingCardState extends State<TrendingCard> {
               } else {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network(snapshot.data!,
-                      height: 250, width: double.infinity, fit: BoxFit.cover),
+                  child: CachedNetworkImage(
+                    height: 250,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    imageUrl: snapshot.data!,
+                  ),
                 );
               }
             },
