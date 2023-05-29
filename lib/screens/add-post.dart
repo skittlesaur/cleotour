@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../auth.dart';
+import 'package:cleotour/widgets/common/alertDialogWidget.dart';
 
 class AddPostScreen extends StatefulWidget {
   @override
@@ -21,6 +22,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
   final _locationController = TextEditingController();
 
   var categoryValue = "Museum";
+  dynamic user = Auth().getCurrentUser();
+  dynamic id = Auth().getCurrentUser()?.uid;
 
   void setImage(String imagePath2) {
     setState(() {
@@ -121,7 +124,15 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     ),
                     MaterialButton(
                       onPressed: () async {
-                        if (_postBodyController.text.isEmpty ||
+                        if (id == null || user == null) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialogWidget(title: "You are not signed in", content: "Please sign in to be able to add a post");
+                            },
+                          );
+                          return;
+                        } else if (_postBodyController.text.isEmpty ||
                             _locationController.text.isEmpty ||
                             imagePath == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
