@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'comment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../auth.dart';
 

@@ -1,10 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class ImageInput extends StatefulWidget {
   Function(String) setImage;
