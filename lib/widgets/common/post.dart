@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post extends StatefulWidget {
   String postId;
@@ -42,16 +41,53 @@ class _PostState extends State<Post> {
     return (Auth().getCurrentUser()?.uid != null);
   }
 
+  storeAverageRatings(int rating) async {
+    await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .set({'averageRating': rating.toString()}, SetOptions(merge: true));
+  }
+
+  getRatingsAverage() async {
+    var amountOfRatings = await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('Ratings')
+        .count()
+        .get()
+        .then((value) {
+      return value.count;
+    });
+
+    num average = 0;
+    var ratings = await FirebaseFirestore.instance
+        .collection('Posts')
+        .doc(widget.postId)
+        .collection('Ratings')
+        .get()
+        .then((value) {
+      for (int i = 0; i < amountOfRatings; i++) {
+        average += value.docs[i].data()['rating'];
+      }
+    });
+
+    if (average == 0) {
+      storeAverageRatings(0);
+      return 0;
+    } else {
+      storeAverageRatings((average / amountOfRatings).ceil());
+      return ((average / amountOfRatings).ceil());
+    }
+  }
+
   void _updateRating(int rating) async {
-    var newDocRef = await FirebaseFirestore.instance
+    var userRatingDoc = await FirebaseFirestore.instance
         .collection('Posts')
         .doc(widget.postId)
         .collection('Ratings')
         .doc(Auth().getCurrentUser()?.uid);
 
-    // print(newDocRef.);
-
-    await newDocRef.set({
+    await userRatingDoc.set({
       'raterId': Auth().getCurrentUser()?.uid,
       'postId': widget.postId,
       'rating': rating
@@ -268,14 +304,16 @@ class _PostState extends State<Post> {
                           if (checkLoggedIn()) {
                             setState(() {
                               this.rating = rating;
-                              // print(rating);
                               _updateRating(rating);
+                              getRatingsAverage();
                             });
                           } else {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return AlertDialogWidget(title: "Login required", content: "You must be logged in first");
+                                return AlertDialogWidget(
+                                    title: "Login required",
+                                    content: "You must be logged in first");
                               },
                             );
                           }
@@ -288,11 +326,22 @@ class _PostState extends State<Post> {
                   height: 0,
                   width: 5,
                 ),
-                Text(rating.toString(),
-                    style: TextStyle(
-                        color: Color.fromRGBO(195, 197, 200, 1),
-                        fontFamily: 'Inter',
-                        fontSize: 20))
+                FutureBuilder(
+                  future: getRatingsAverage(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: Text('Loading...'));
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return Text(snapshot.data.toString(),
+                          style: TextStyle(
+                              color: Color.fromRGBO(195, 197, 200, 1),
+                              fontFamily: 'Inter',
+                              fontSize: 20));
+                    }
+                  },
+                ),
               ],
             ),
             SizedBox(
@@ -341,3 +390,9 @@ class _PostState extends State<Post> {
     );
   }
 }
+
+// Text(rating.toString(),
+//                     style: TextStyle(
+//                         color: Color.fromRGBO(195, 197, 200, 1),
+//                         fontFamily: 'Inter',
+//                         fontSize: 20))
