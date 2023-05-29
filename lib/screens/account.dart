@@ -62,7 +62,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        UserImagePicker(),
+                                        UserImagePicker(
+                                            currentUser: currentUser),
                                         SizedBox(
                                           width: 10,
                                         ),
@@ -89,32 +90,15 @@ class _AccountScreenState extends State<AccountScreen> {
                                       ],
                                     ),
                                     PopupMenuButton(
+                                      color: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          side: BorderSide(
+                                              color: Colors.grey.shade800)),
                                       itemBuilder: (context) => [
                                         // toggle between dark and light mode
-                                        PopupMenuItem(
-                                          child: TextButton(
-                                            onPressed: () {},
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.dark_mode,
-                                                  color: Colors.black,
-                                                ),
-                                                SizedBox(
-                                                  width: 10,
-                                                ),
-                                                Text(
-                                                  "Dark Mode",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Colors.black),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
+
                                         PopupMenuItem(
                                           child: TextButton(
                                             onPressed: () {
@@ -124,7 +108,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                               children: [
                                                 Icon(
                                                   Icons.logout,
-                                                  color: Colors.black,
+                                                  color: Colors.white,
+                                                  size: 20,
                                                 ),
                                                 SizedBox(
                                                   width: 10,
@@ -135,7 +120,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.w400,
-                                                      color: Colors.black),
+                                                      color: Colors.white),
                                                 ),
                                               ],
                                             ),
