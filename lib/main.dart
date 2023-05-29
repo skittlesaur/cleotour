@@ -12,13 +12,13 @@ import 'screens/home.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: FirebaseOptions(
-        appId: '1:277688353042:android:95f586db4aa1556a3a33cb',
-        apiKey: 'AIzaSyBha9BBSHOLFjkIBuKJOCinYYWCOqUV2Gk',
-        projectId: 'cleotour-8bd53',
-        messagingSenderId: '277688353042',
-        storageBucket: 'cleotour-8bd53.appspot.com/'),
-  );
+      // options: FirebaseOptions(
+      // appId: '1:277688353042:android:95f586db4aa1556a3a33cb',
+      // apiKey: 'AIzaSyBha9BBSHOLFjkIBuKJOCinYYWCOqUV2Gk',
+      // projectId: 'cleotour-8bd53',
+      // messagingSenderId: '277688353042',
+      // storageBucket: 'cleotour-8bd53.appspot.com/'),
+      );
   runApp(MyApp());
 }
 
