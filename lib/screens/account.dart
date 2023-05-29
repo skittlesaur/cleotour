@@ -146,7 +146,7 @@ class AccountScreen extends StatelessWidget {
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection("Posts")
-                      .where('authorId', isEqualTo: currentUser!.uid)
+                      .where('posterId', isEqualTo: currentUser!.uid)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
@@ -172,14 +172,14 @@ class AccountScreen extends StatelessWidget {
                             margin: EdgeInsets.only(bottom: 20),
                             child: Post(
                               postId: document['postId'],
-                              posterId: document['authorId'],
+                              posterId: document['posterId'],
                               body: document['body'],
                               category: document['category'],
                               postedAt: document['postedAt'],
                               imageUrl: document['imageUrl'],
                               likes: document['likes'],
                               location: document['location'],
-                              posterUserName: document['authorUserName'],
+                              posterUserName: document['posterUserName'],
                             ));
                       }).toList(),
                     );
