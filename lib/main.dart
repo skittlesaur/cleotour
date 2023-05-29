@@ -3,6 +3,7 @@ import 'package:cleotour/screens/auth_Screen.dart';
 import 'package:cleotour/screens/favorites.dart';
 import 'package:cleotour/widgets/bottom-navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'screens/add-post.dart';
@@ -18,7 +19,6 @@ Future main() async {
       //     messagingSenderId: '277688353042',
       //     storageBucket: 'cleotour-8bd53.appspot.com/'),
       );
-
   runApp(MyApp());
 }
 
@@ -42,6 +42,18 @@ class _MyAppState extends State<MyApp> {
   void updateAuthenticationStatus(bool isLoggedIn) {
     setState(() {
       _isLoggedIn = isLoggedIn;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        updateAuthenticationStatus(false);
+      } else {
+        updateAuthenticationStatus(true);
+      }
     });
   }
 
