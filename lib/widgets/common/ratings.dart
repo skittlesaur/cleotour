@@ -2,18 +2,24 @@ import 'package:flutter/material.dart';
 
 class RatingWidget extends StatefulWidget {
   final void Function(int rating) onRatingSelected;
+  int prevRating;
+  bool isLoggedIn;
 
-  RatingWidget({required this.onRatingSelected});
+  RatingWidget(
+      {required this.onRatingSelected,
+      required this.isLoggedIn,
+      required this.prevRating});
 
   @override
   _RatingWidgetState createState() => _RatingWidgetState();
 }
 
 class _RatingWidgetState extends State<RatingWidget> {
-  int _rating = 0;
+  int _rating = 1;
 
   @override
   Widget build(BuildContext context) {
+    _rating = widget.prevRating;
     return SizedBox(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -50,10 +56,12 @@ class _RatingWidgetState extends State<RatingWidget> {
                     size: 20,
                   ),
             onPressed: () {
-              setState(() {
-                _rating = 1;
-                widget.onRatingSelected(_rating);
-              });
+              if (widget.isLoggedIn) {
+                setState(() {
+                  _rating = 1;
+                });
+              }
+              widget.onRatingSelected(_rating);
             },
           ),
           TextButton(
@@ -88,10 +96,12 @@ class _RatingWidgetState extends State<RatingWidget> {
                     size: 20,
                   ),
             onPressed: () {
-              setState(() {
-                _rating = 2;
-                widget.onRatingSelected(_rating);
-              });
+              if (widget.isLoggedIn) {
+                setState(() {
+                  _rating = 2;
+                });
+              }
+              widget.onRatingSelected(_rating);
             },
           ),
           TextButton(
@@ -126,10 +136,12 @@ class _RatingWidgetState extends State<RatingWidget> {
                     size: 20,
                   ),
             onPressed: () {
-              setState(() {
-                _rating = 3;
-                widget.onRatingSelected(_rating);
-              });
+              if (widget.isLoggedIn) {
+                setState(() {
+                  _rating = 3;
+                });
+              }
+              widget.onRatingSelected(_rating);
             },
           ),
           TextButton(
@@ -164,10 +176,12 @@ class _RatingWidgetState extends State<RatingWidget> {
                     size: 20,
                   ),
             onPressed: () {
-              setState(() {
-                _rating = 4;
-                widget.onRatingSelected(_rating);
-              });
+              if (widget.isLoggedIn) {
+                setState(() {
+                  _rating = 4;
+                });
+              }
+              widget.onRatingSelected(_rating);
             },
           ),
           TextButton(
@@ -202,10 +216,12 @@ class _RatingWidgetState extends State<RatingWidget> {
                     size: 20,
                   ),
             onPressed: () {
-              setState(() {
-                _rating = 5;
-                widget.onRatingSelected(_rating);
-              });
+              if (widget.isLoggedIn) {
+                setState(() {
+                  _rating = 5;
+                });
+              }
+              widget.onRatingSelected(_rating);
             },
           ),
         ],
