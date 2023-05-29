@@ -96,7 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       if (_isSignup) ...[
-                        const UserImagePicker(),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8, top: 20),
                           child: Container(

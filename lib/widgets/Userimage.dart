@@ -26,26 +26,42 @@ class _UserImagePickerState extends State<UserImagePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        CircleAvatar(
-          radius: 40,
-          backgroundColor: Colors.amber,
-          backgroundImage: _pickedImage != null
-              ? FileImage(_pickedImage!)
-              : const NetworkImage(
-                      "https://cdn-icons-png.flaticon.com/512/1048/1048549.png?w=740&t=st=1685389297~exp=1685389897~hmac=26103e20d20a8e55be1926cab1c35ff04968e9b0a28d24bbc7484d26aeaf70d9")
-                  as ImageProvider<Object>?,
-        ),
-        TextButton.icon(
-          style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).primaryColor,
-          ),
-          onPressed: _pickImage,
-          icon: const Icon(Icons.image),
-          label: const Text('Add Image'),
-        ),
-      ],
-    );
+    return SizedBox(
+        height: 80,
+        width: 80,
+        child: Stack(
+          clipBehavior: Clip.none,
+          fit: StackFit.expand,
+          children: <Widget>[
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.amber,
+              backgroundImage: _pickedImage != null
+                  ? FileImage(_pickedImage!)
+                  : AssetImage('assets/avatardefault.png')
+                      as ImageProvider<Object>?,
+            ),
+            Positioned(
+                bottom: -5,
+                right: -10,
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black,
+                  ),
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: _pickImage,
+                    icon: Icon(
+                      Icons.camera_alt_outlined,
+                      color: Colors.amber,
+                    ),
+                  ),
+                )),
+          ],
+        ));
   }
 }
