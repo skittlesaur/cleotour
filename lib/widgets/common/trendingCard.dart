@@ -1,6 +1,27 @@
 import 'package:flutter/material.dart';
 
 class TrendingCard extends StatefulWidget {
+  String postId;
+  String posterId;
+  String posterUserName;
+  String body;
+  String location;
+  int likes;
+  String postedAt;
+  String imageUrl;
+  String category;
+
+  TrendingCard({
+    required this.postId,
+    required this.posterId,
+    required this.posterUserName,
+    required this.body,
+    required this.location,
+    required this.likes,
+    required this.postedAt,
+    required this.imageUrl,
+    required this.category,
+  });
   @override
   State<TrendingCard> createState() => _TrendingCardState();
 }
@@ -17,6 +38,18 @@ class _TrendingCardState extends State<TrendingCard> {
             borderRadius: BorderRadius.circular(20),
             child: Image.network('https://i.imgur.com/4Kf1fKK.png',
                 height: 250, width: double.infinity, fit: BoxFit.cover),
+          ),
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5), color: Colors.white),
+            child: Text(
+              widget.category,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600),
+            ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -38,10 +71,10 @@ class _TrendingCardState extends State<TrendingCard> {
                           ),
                         ),
                         child: CircleAvatar(
-                          radius: 20,
-                          backgroundImage:
-                              NetworkImage('https://i.imgur.com/OZdGrR9.jpg'),
-                        ),
+                            radius: 20,
+                            backgroundImage:
+                                // NetworkImage('https://i.imgur.com/VRWDRXL.png'),
+                                AssetImage('assets/image.png')),
                       ),
                       Column(
                         mainAxisSize: MainAxisSize.min,
@@ -50,12 +83,12 @@ class _TrendingCardState extends State<TrendingCard> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 5),
                             child: Text(
-                              "Temple of Hathor, Dendera",
+                              widget.location,
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
                           Text(
-                            "Slim Abdennadher",
+                            widget.posterUserName,
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
@@ -66,8 +99,8 @@ class _TrendingCardState extends State<TrendingCard> {
                     children: [
                       IconButton(
                           onPressed: () => print("hello"),
-                          icon: Icon(Icons.favorite,
-                              color: Color.fromRGBO(242, 56, 86, 1))),
+                          icon: Icon(Icons.star,
+                              color: Color.fromRGBO(255, 191, 0, 1))),
                       Text("200", style: TextStyle(color: Colors.white))
                     ],
                   )
