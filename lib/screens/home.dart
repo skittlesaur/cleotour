@@ -61,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
               // )
               DropdownButton<String>(
                 borderRadius: BorderRadius.circular(10),
-                padding: EdgeInsets.only(left: 10, right: 10),
                 dropdownColor: Color.fromRGBO(255, 191, 0, 1),
                 focusColor: Colors.grey.shade900,
                 value: categoryValue,
