@@ -7,20 +7,26 @@ import 'package:cleotour/widgets/common/comment.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class Post extends StatefulWidget {
-  String id;
+  String postId;
+  String posterId;
+  String posterUserName;
   String body;
   String location;
   int likes;
   String postedAt;
   String imageUrl;
+  String category;
 
   Post(
-      {required this.id,
+      {required this.postId,
+      required this.posterId,
+      required this.posterUserName,
       required this.body,
       required this.location,
       required this.likes,
       required this.postedAt,
-      required this.imageUrl});
+      required this.imageUrl,
+      required this.category});
 
   @override
   State<Post> createState() => _PostState();
@@ -61,7 +67,7 @@ class _PostState extends State<Post> {
         color: Color.fromRGBO(32, 32, 33, 1),
         borderRadius: BorderRadius.circular(15),
       ),
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       padding: EdgeInsets.only(top: padding, left: padding, right: padding),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -78,14 +84,28 @@ class _PostState extends State<Post> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Placeholder',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Inter',
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500),
-                    textAlign: TextAlign.left,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.posterUserName,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Inter',
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500),
+                        textAlign: TextAlign.left,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text('#' + widget.category,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Inter',
+                                fontSize: 10,
+                                fontWeight: FontWeight.w300)),
+                      )
+                    ],
                   ),
                   SizedBox(height: 5),
                   Row(children: [
@@ -121,15 +141,16 @@ class _PostState extends State<Post> {
           height: screenWidth * 0.02,
         ),
         Container(
+            alignment: Alignment.centerLeft,
             child: Text(
-          widget.body,
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'Inter',
-              fontSize: 15,
-              height: 1.3),
-        )),
+              widget.body,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Inter',
+                  fontSize: 15,
+                  height: 1.3),
+            )),
         SizedBox(
           height: screenWidth * 0.02,
         ),
@@ -232,7 +253,7 @@ class _PostState extends State<Post> {
                       topLeft: Radius.circular(15),
                       topRight: Radius.circular(15),
                     )),
-                    builder: (_) => CommentsPage(postId: widget.id),
+                    builder: (_) => CommentsPage(postId: widget.postId),
                   );
                 },
                 child: SizedBox(
@@ -259,100 +280,4 @@ class _PostState extends State<Post> {
       ]),
     );
   }
-
-  // void _showCommentSheet(BuildContext context) {
-  //   showModalBottomSheet<void>(
-  //     context: context,
-  //     shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.only(
-  //       topLeft: Radius.circular(15),
-  //       topRight: Radius.circular(15),
-  //     )),
-  //     builder: (BuildContext context) {
-  //       return Container(
-  //           decoration: BoxDecoration(
-  //               color: Color.fromRGBO(15, 15, 16, 1),
-  //               borderRadius: BorderRadius.only(
-  //                 topLeft: Radius.circular(15),
-  //                 topRight: Radius.circular(15),
-  //               )),
-  //           child: Column(children: [
-  //             SizedBox(height: 16),
-  //             Text("Comments",
-  //                 textAlign: TextAlign.center,
-  //                 style: TextStyle(
-  //                     color: Colors.white,
-  //                     fontFamily: 'Inter',
-  //                     fontSize: 14,
-  //                     fontWeight: FontWeight.w500)),
-
-  //             AddCommentWidget(
-  //               postId: widget.id,
-  //             )
-  //           ]));
-  //     },
-  //   );
-  // }
-
-//   Widget _buildComment() {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Comment(
-//             author: "Youssef Saad",
-//             comment:
-//                 "If vibrant colors, trendy cafes, and stunning views of the Nile are your thing, then Zamalek is the perfect place to explore. Just don't forget your sunglasses, you might need them to shield your eyes from all the colorful buildings! 😎🌈",
-//             likes: 0,
-//             liked: false),
-//         Padding(
-//             padding: EdgeInsets.symmetric(horizontal: 16),
-//             child: Container(
-//               decoration: BoxDecoration(
-//                 border: Border(
-//                   bottom: BorderSide(
-//                     color: Colors.grey.withOpacity(0.4),
-//                     width: 0.6,
-//                   ),
-//                 ),
-//               ),
-//             )),
-//         Comment(
-//             author: "Youssef Saad",
-//             comment:
-//                 "If vibrant colors, trendy cafes, and stunning views of the Nile are your thing, then Zamalek is the perfect place to explore. Just don't forget your sunglasses, you might need them to shield your eyes from all the colorful buildings! 😎🌈",
-//             likes: 0,
-//             liked: false),
-//         Padding(
-//             padding: EdgeInsets.symmetric(horizontal: 16),
-//             child: Container(
-//               decoration: BoxDecoration(
-//                 border: Border(
-//                   bottom: BorderSide(
-//                     color: Colors.grey.withOpacity(0.4),
-//                     width: 0.6,
-//                   ),
-//                 ),
-//               ),
-//             )),
-//         Comment(
-//             author: "Youssef Saad",
-//             comment:
-//                 "If vibrant colors, trendy cafes, and stunning views of the Nile are your thing, then Zamalek is the perfect place to explore. Just don't forget your sunglasses, you might need them to shield your eyes from all the colorful buildings! 😎🌈",
-//             likes: 0,
-//             liked: false),
-//         Padding(
-//             padding: EdgeInsets.symmetric(horizontal: 16),
-//             child: Container(
-//               decoration: BoxDecoration(
-//                 border: Border(
-//                   bottom: BorderSide(
-//                     color: Colors.grey.withOpacity(0.4),
-//                     width: 0.6,
-//                   ),
-//                 ),
-//               ),
-//             ))
-//       ],
-//     );
-  // }
 }

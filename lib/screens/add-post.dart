@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../auth.dart';
 
 class AddPostScreen extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   final _postBodyController = TextEditingController();
   final _locationController = TextEditingController();
+
+  var categoryValue = "Museum";
 
   void setImage(String imagePath2) {
     setState(() {
@@ -37,12 +40,15 @@ class _AddPostScreenState extends State<AddPostScreen> {
       var newDocRef = await _postsCollection.doc();
 
       await newDocRef.set({
-        'id': newDocRef.id,
+        'postId': newDocRef.id,
+        'posterId': Auth().getCurrentUser()?.uid,
+        'posterUserName': Auth().getCurrentUser()?.displayName,
         'body': _postBodyController.text,
         'postedAt': DateTime.now().toLocal().toString(),
         'location': _locationController.text,
         'imageUrl': imageUrl,
         'likes': 0,
+        'category': categoryValue
       });
     }
   }
@@ -53,97 +59,100 @@ class _AddPostScreenState extends State<AddPostScreen> {
         backgroundColor: Colors.black,
         body: SafeArea(
             child: Form(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      children: <Widget>[
-                        TextField(
-                          style: TextStyle(color: Colors.white),
-                          cursorColor: Colors.white,
-                          decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey[800],
-                              hintText: 'What\'s new?',
-                              hintStyle: TextStyle(color: Colors.grey),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.amber))),
-                          controller: _postBodyController,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextField(
-                          style: TextStyle(color: Colors.white),
-                          cursorColor: Colors.white,
-                          decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey[800],
-                              hintText: 'Location',
-                              hintStyle: TextStyle(color: Colors.grey),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.amber))),
-                          controller: _locationController,
-                        ),
-                        SizedBox(
-                          height: 100,
-                        ),
-                        ImageInput(setImage: setImage),
-                        SizedBox(
-                          height: 150,
-                        ),
-                        Container(
-                            color: Colors.amber,
-                            alignment: Alignment.bottomCenter,
-                            width: 320,
-                            child: SizedBox(
-                                height: 50,
-                                width: 275,
-                                child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    side: BorderSide(
-                                      color: Colors.amber,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  onPressed: () async {
-                                    if (_postBodyController.text.isEmpty ||
-                                        _locationController.text.isEmpty ||
-                                        imagePath == null) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                              'Please fill in all fields and upload an image.'),
-                                        ),
-                                      );
-                                    } else {
-                                      await uploadPost(imagePath);
-                                      setState(() {
-                                        _postBodyController.text = '';
-                                        _locationController.text = '';
-                                      });
-                                    }
-                                  },
-                                  child: Text(
-                                    'Post',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ))) /////
-                      ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget>[
+                    TextField(
+                      decoration: InputDecoration(
+                          hintText: 'What\'s new?',
+                          border: OutlineInputBorder()),
+                      controller: _postBodyController,
                     ),
-                  ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextField(
+                      decoration: InputDecoration(
+                          hintText: 'Location', border: OutlineInputBorder()),
+                      controller: _locationController,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: DropdownButton<String>(
+                        value: categoryValue,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            categoryValue = newValue!;
+                          });
+                        },
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 24.0,
+                        elevation: 16,
+                        underline: SizedBox(),
+                        items: ['Beach', 'Club', 'Museum', 'Restaurant']
+                            .map((String item) {
+                          return DropdownMenuItem<String>(
+                            child: Text(item),
+                            value: item,
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ImageInput(setImage: setImage),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    MaterialButton(
+                      onPressed: () async {
+                        if (_postBodyController.text.isEmpty ||
+                            _locationController.text.isEmpty ||
+                            imagePath == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'Please fill in all fields and upload an image.'),
+                            ),
+                          );
+                        } else {
+                          await uploadPost(imagePath);
+                          setState(() {
+                            _postBodyController.text = '';
+                            _locationController.text = '';
+                          });
+                        }
+                      },
+                      color: Color.fromRGBO(255, 220, 115, 1),
+                      child: Text(
+                        'Post',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        )));
+        ],
+      ),
+    )));
   }
 }
