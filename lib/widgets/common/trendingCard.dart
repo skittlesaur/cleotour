@@ -1,11 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class TrendingCard extends StatefulWidget {
+  String postId;
+  String posterId;
+  String posterUserName;
+  String body;
+  String location;
+  int likes;
+  String postedAt;
+  String imageUrl;
+  String category;
+  String avgRating;
+
+  TrendingCard(
+      {required this.postId,
+      required this.posterId,
+      required this.posterUserName,
+      required this.body,
+      required this.location,
+      required this.likes,
+      required this.postedAt,
+      required this.imageUrl,
+      required this.category,
+      required this.avgRating});
+
   @override
   State<TrendingCard> createState() => _TrendingCardState();
 }
 
 class _TrendingCardState extends State<TrendingCard> {
+  final _storage = FirebaseStorage.instance;
+  var img;
+
+  Future<String> downloadFile(String imageUrl) async {
+    String downloadURL = await _storage.ref(imageUrl).getDownloadURL();
+    img = downloadURL;
+    return downloadURL;
+  }
+
   @override
   Widget build(BuildContext context) {
     return (Container(
@@ -13,15 +46,41 @@ class _TrendingCardState extends State<TrendingCard> {
       width: 500,
       child: Stack(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network('https://i.imgur.com/4Kf1fKK.png',
-                height: 250, width: double.infinity, fit: BoxFit.cover),
+          FutureBuilder(
+            future: downloadFile(widget.imageUrl),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Icon(Icons.error, size: 100);
+              } else {
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    snapshot.data!,
+                    height: 250,
+                    width: double.infinity,
+                  ),
+                );
+              }
+            },
+          ),
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5), color: Colors.white),
+            child: Text(
+              widget.category,
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600),
+            ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -29,7 +88,6 @@ class _TrendingCardState extends State<TrendingCard> {
                   Row(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(right: 10),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -38,10 +96,13 @@ class _TrendingCardState extends State<TrendingCard> {
                           ),
                         ),
                         child: CircleAvatar(
-                          radius: 20,
-                          backgroundImage:
-                              NetworkImage('https://i.imgur.com/OZdGrR9.jpg'),
-                        ),
+                            radius: 20,
+                            backgroundImage:
+                                // NetworkImage('https://i.imgur.com/VRWDRXL.png'),
+                                AssetImage('assets/image.png')),
+                      ),
+                      SizedBox(
+                        width: 10,
                       ),
                       Column(
                         mainAxisSize: MainAxisSize.min,
@@ -50,13 +111,15 @@ class _TrendingCardState extends State<TrendingCard> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 5),
                             child: Text(
-                              "Temple of Hathor, Dendera",
+                              widget.location,
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
                           Text(
                             "Slim Abdennadher",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
                           ),
                         ],
                       ),
@@ -65,10 +128,11 @@ class _TrendingCardState extends State<TrendingCard> {
                   Row(
                     children: [
                       IconButton(
-                          onPressed: () => print("hello"),
-                          icon: Icon(Icons.favorite,
-                              color: Color.fromRGBO(242, 56, 86, 1))),
-                      Text("200", style: TextStyle(color: Colors.white))
+                          onPressed: () => {},
+                          icon: Icon(Icons.star,
+                              color: Color.fromRGBO(255, 191, 0, 1))),
+                      Text(widget.avgRating,
+                          style: TextStyle(color: Colors.white))
                     ],
                   )
                 ],
@@ -77,7 +141,7 @@ class _TrendingCardState extends State<TrendingCard> {
           )
         ],
       ),
-      padding: EdgeInsets.all(30),
+      padding: EdgeInsets.all(10),
     ));
   }
 }

@@ -102,6 +102,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                         PopupMenuItem(
                                           child: TextButton(
                                             onPressed: () {
+                                              Navigator.of(context).pop();
                                               signOutAndChangeIndex();
                                             },
                                             child: Row(

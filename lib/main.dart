@@ -1,7 +1,9 @@
 import 'package:cleotour/screens/account.dart';
 import 'package:cleotour/screens/auth_Screen.dart';
 import 'package:cleotour/screens/favorites.dart';
+import 'package:cleotour/widgets/addpost/main.dart';
 import 'package:cleotour/widgets/bottom-navigation.dart';
+import 'package:cleotour/widgets/top-bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,6 +32,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _currentIndex = 0;
   bool _isLoggedIn = false;
+  bool _isAddingPost = false;
 
   void changeIndex(int index) {
     setState(() {
@@ -42,6 +45,12 @@ class _MyAppState extends State<MyApp> {
   void updateAuthenticationStatus(bool isLoggedIn) {
     setState(() {
       _isLoggedIn = isLoggedIn;
+    });
+  }
+
+  void changeAddingPost(bool isAddingPost) {
+    setState(() {
+      _isAddingPost = isAddingPost;
     });
   }
 
@@ -74,13 +83,34 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         bottomNavigationBar: BottomNavigation(
           currentIndex: _currentIndex,
-          onTap: changeIndex,
+          onTap: (index) {
+            // hide the add post page just in case
+            changeAddingPost(false);
+            // then change the index
+            changeIndex(index);
+          },
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0),
-          child: IndexedStack(
-            index: _currentIndex,
-            children: _screens,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 0),
+            child: Column(
+              children: [
+                _currentIndex != 3
+                    ? TopBar(
+                        changeAddingPost: changeAddingPost,
+                        isAddingPost: _isAddingPost,
+                        changeIndex: changeIndex,
+                      )
+                    : Container(),
+                _isAddingPost
+                    ? AddPost(
+                        changeAddingPost: changeAddingPost,
+                      )
+                    : Expanded(
+                        child: _screens[_currentIndex],
+                      ),
+              ],
+            ),
           ),
         ),
       ),

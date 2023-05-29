@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:cleotour/widgets/add-post/image-input.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -32,12 +31,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
   }
 
   Future uploadPost(String? imagePath) async {
-    print(imagePath);
     if (imagePath != null) {
       final uuid = Uuid();
       final ref = _storage.ref().child('images/${uuid.v4()}');
       String imageUrl = ref.fullPath;
-      final uploadTask = ref.putFile(File(imagePath));
 
       var newDocRef = await _postsCollection.doc();
 

@@ -10,117 +10,135 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var categoryValue = "All";
-  Stream<QuerySnapshot<Object?>> getPosts() {
-    if (categoryValue == 'All') {
-      return FirebaseFirestore.instance
-          .collection("Posts")
-          .orderBy("postedAt", descending: true)
-          .snapshots();
+  String categoryValue = "All";
+  final ScrollController _scrollController = ScrollController();
+  List<DocumentSnapshot> _posts = [];
+  bool _isLoading = false;
+
+  final int FETCH_POSTS_LIMIT = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPosts();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _fetchPosts();
     }
-    return FirebaseFirestore.instance
-        .collection("Posts")
-        .where('category', isEqualTo: categoryValue)
-        .snapshots();
-    // .orderBy("postedAt", descending: true)
-    // .snapshots();
+  }
+
+  void _fetchPosts() async {
+    if (!_isLoading) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      QuerySnapshot querySnapshot;
+      if (_posts.isEmpty) {
+        querySnapshot = await FirebaseFirestore.instance
+            .collection('Posts')
+            .orderBy('postedAt', descending: true)
+            .limit(FETCH_POSTS_LIMIT)
+            .get();
+      } else {
+        querySnapshot = await FirebaseFirestore.instance
+            .collection('Posts')
+            .orderBy('postedAt', descending: true)
+            .startAfterDocument(_posts.last)
+            .limit(FETCH_POSTS_LIMIT)
+            .get();
+      }
+
+      // @todo: remove this print statement
+      print("Loaded ${querySnapshot.docs.length} new posts");
+      setState(() {
+        _posts.addAll(querySnapshot.docs);
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
+        backgroundColor: Colors.black,
+        body: SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
-        children: [
-          TrendingSection(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 padding: EdgeInsets.all(10),
                 child: Text(
-                  "Recent",
+                  "Trending Tours",
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w900,
                       color: Colors.white),
                 ),
               ),
-              // Chip(
-              //   elevation: 20,
-              //   padding: EdgeInsets.all(8),
-              //   backgroundColor: Colors.greenAccent[100],
-              //   shadowColor: Colors.black,
-              //   avatar: CircleAvatar(
-              //     backgroundImage: NetworkImage(
-              //         "https://pbs.twimg.com/profile_images/1304985167476523008/QNHrwL2q_400x400.jpg"), //NetworkImage
-              //   ), //CircleAvatar
-              //   label: Text(
-              //     'GeeksforGeeks',
-              //     style: TextStyle(fontSize: 20),
-              //   ), //Text
-              // )
-              DropdownButton<String>(
-                borderRadius: BorderRadius.circular(10),
-                dropdownColor: Color.fromRGBO(255, 191, 0, 1),
-                focusColor: Colors.grey.shade900,
-                value: categoryValue,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    categoryValue = newValue!;
-                  });
-                },
-                icon: Icon(Icons.format_list_bulleted_sharp),
-                iconSize: 24.0,
-                elevation: 16,
-                underline: SizedBox(),
-                items: ['Beach', 'Club', 'Museum', 'Restaurant', 'All']
-                    .map((String item) {
-                  return DropdownMenuItem<String>(
+              TrendingSection(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10),
                     child: Text(
-                      item,
-                      style: TextStyle(color: Colors.white),
+                      "Recent",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white),
                     ),
-                    value: item,
+                  ),
+                  DropdownButton<String>(
+                    borderRadius: BorderRadius.circular(10),
+                    dropdownColor: Color.fromRGBO(255, 191, 0, 1),
+                    focusColor: Colors.grey.shade900,
+                    value: categoryValue,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        categoryValue = newValue!;
+                      });
+                    },
+                    icon: Icon(Icons.format_list_bulleted_sharp),
+                    iconSize: 24.0,
+                    elevation: 16,
+                    underline: SizedBox(),
+                    items: ['Beach', 'Club', 'Museum', 'Restaurant', 'All']
+                        .map((String item) {
+                      return DropdownMenuItem<String>(
+                        child: Text(
+                          item,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        value: item,
+                      );
+                    }).toList(),
+                  )
+                ],
+              ),
+              Column(
+                children: _posts.map((post) {
+                  return Post(
+                    postId: post.id,
+                    body: post['body'],
+                    location: post['location'],
+                    category: post['category'],
+                    posterId: post['posterId'],
+                    posterUserName: post['posterUserName'],
+                    likes: post['likes'],
+                    imageUrl: post['imageUrl'],
+                    postedAt: post['postedAt'],
                   );
                 }).toList(),
-              )
+              ),
             ],
           ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-                stream: getPosts(),
-                builder: (ctx, strSnapshot) {
-                  if (strSnapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  var myDocuments = strSnapshot.data!.docs;
-
-                  return ListView.builder(
-                    itemBuilder: (itemCtx, index) {
-                      var document = myDocuments[index].data() as Map;
-
-                      return Post(
-                        postId: document['postId'],
-                        posterId: document['posterId'],
-                        posterUserName: document['posterUserName'],
-                        body: document['body'],
-                        location: document['location'],
-                        likes: document['likes'],
-                        postedAt: document['postedAt'],
-                        imageUrl: document['imageUrl'],
-                        category: document['category'],
-                      );
-                    },
-                    itemCount: myDocuments.length,
-                  );
-                }),
-          )
-        ],
-      )),
-    );
+        ));
   }
 }
