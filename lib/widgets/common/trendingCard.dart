@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class TrendingCard extends StatefulWidget {
@@ -25,6 +24,7 @@ class TrendingCard extends StatefulWidget {
       required this.imageUrl,
       required this.category,
       required this.avgRating});
+
   @override
   State<TrendingCard> createState() => _TrendingCardState();
 }
@@ -41,7 +41,6 @@ class _TrendingCardState extends State<TrendingCard> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.avgRating);
     return (Container(
       height: 300,
       width: 500,
@@ -126,7 +125,7 @@ class _TrendingCardState extends State<TrendingCard> {
                   Row(
                     children: [
                       IconButton(
-                          onPressed: () => print("hello"),
+                          onPressed: () => {},
                           icon: Icon(Icons.star,
                               color: Color.fromRGBO(255, 191, 0, 1))),
                       Text(widget.avgRating,

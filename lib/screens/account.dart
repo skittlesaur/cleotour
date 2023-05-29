@@ -92,7 +92,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                   // toggle between dark and light mode
                                   PopupMenuItem(
                                     child: TextButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
                                       child: Row(
                                         children: [
                                           Icon(
@@ -116,6 +118,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                   PopupMenuItem(
                                     child: TextButton(
                                       onPressed: () {
+                                        Navigator.of(context).pop();
                                         signOutAndChangeIndex();
                                       },
                                       child: Row(
@@ -333,7 +336,6 @@ class _AccountScreenState extends State<AccountScreen> {
                 ))));
   }
 }
-
 
 // Container(
 //                                     height: 300,
