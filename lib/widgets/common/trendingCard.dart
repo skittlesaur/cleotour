@@ -21,7 +21,7 @@ class _TrendingCardState extends State<TrendingCard> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.all(20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -29,7 +29,6 @@ class _TrendingCardState extends State<TrendingCard> {
                   Row(
                     children: [
                       Container(
-                        margin: EdgeInsets.only(right: 10),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
@@ -42,6 +41,9 @@ class _TrendingCardState extends State<TrendingCard> {
                           backgroundImage:
                               NetworkImage('https://i.imgur.com/OZdGrR9.jpg'),
                         ),
+                      ),
+                      SizedBox(
+                        width: 10,
                       ),
                       Column(
                         mainAxisSize: MainAxisSize.min,
@@ -56,7 +58,9 @@ class _TrendingCardState extends State<TrendingCard> {
                           ),
                           Text(
                             "Slim Abdennadher",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
                           ),
                         ],
                       ),
@@ -77,7 +81,7 @@ class _TrendingCardState extends State<TrendingCard> {
           )
         ],
       ),
-      padding: EdgeInsets.all(30),
+      padding: EdgeInsets.all(10),
     ));
   }
 }

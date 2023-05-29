@@ -9,16 +9,16 @@ class TrendingSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 30, top: 20),
+        Container(
+          padding: EdgeInsets.all(10),
           child: Text(
             "Trending Tours",
             style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
+                fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
           ),
         ),
         Container(
-          height: 300,
+          height: 280,
           child: ListView(
             children: [
               CarouselSlider(
