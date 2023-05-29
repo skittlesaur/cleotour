@@ -288,8 +288,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     width: 350,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image:
-                                            CachedNetworkImage(imageUrl: Image),
+                                        image: NetworkImage(Image ?? ""),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
