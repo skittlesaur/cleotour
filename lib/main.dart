@@ -20,13 +20,28 @@ Future main() async {
       //     messagingSenderId: '277688353042',
       //     storageBucket: 'cleotour-8bd53.appspot.com/'),
       );
-  FirebaseMessaging.onBackgroundMessage(background_notif_handler);
+  // FirebaseMessaging.onBackgroundMessage(background_notif_handler);
+
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print(fcmToken);
+
+  FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken))
+
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   print('Got a message whilst in the foreground!');
+  //   print('Message data: ${message.data}');
+
+  //   if (message.notification != null) {
+  //     print('Message also contained a notification: ${message.notification}');
+  //   }
+  // });
+
   runApp(MyApp());
 }
 
-Future<void> background_notif_handler(RemoteMessage message) async {
-  print("Handling a background message: ${message.data}");
-}
+// Future<void> background_notif_handler(RemoteMessage message) async {
+//   print("Handling a background message: ${message.data}");
+// }
 
 class MyApp extends StatefulWidget {
   @override
