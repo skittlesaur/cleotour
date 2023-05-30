@@ -1,5 +1,4 @@
 import 'package:cleotour/auth.dart';
-import 'package:cleotour/widgets/Userimage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -67,119 +66,27 @@ class _LoginScreenState extends State<LoginScreen> {
               fit: BoxFit.cover,
             )),
         width: double.infinity,
-        child: ShaderMask(
-          shaderCallback: (Rect bounds) {
-            return const LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [Colors.black, Colors.transparent],
-            ).createShader(bounds);
-          },
-          blendMode: BlendMode.dstIn,
-          child: Container(
-            margin: EdgeInsets.only(top: 150),
-            child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              child: Column(
-                children: [
-                  const Text(
-                    "Cleotours",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      fontSize: 36,
-                    ),
+        child: Container(
+          margin: EdgeInsets.only(top: 150),
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: Column(
+              children: [
+                const Text(
+                  "Cleotour",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 36,
                   ),
-                  if (_isSignup) ...[
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8, top: 20),
-                      child: Container(
-                        width: 400,
-                        child: const Text(
-                          "Username",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: 400,
-                      child: Container(
-                        color: Colors.black,
-                        child: TextField(
-                          controller: _usernameController,
-                          style: const TextStyle(color: Colors.grey),
-                          decoration: InputDecoration(
-                            labelText: "Enter a username",
-                            labelStyle: const TextStyle(
-                              color: Colors.grey,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                width: 1,
-                                color: Color.fromRGBO(47, 47, 48, 1),
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(width: 1, color: Colors.grey),
-                            ),
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                  Container(
-                    width: 400,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 8, top: 20),
-                      child: Container(
-                        width: 400,
-                        child: const Text(
-                          "Email",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 400,
-                    child: Container(
-                      color: Colors.black,
-                      child: TextField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        style: const TextStyle(color: Colors.grey),
-                        decoration: InputDecoration(
-                          labelText: "Enter an Email",
-                          labelStyle: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              width: 1,
-                              color: Color.fromRGBO(47, 47, 48, 1),
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.grey),
-                          ),
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                        ),
-                      ),
-                    ),
-                  ),
+                ),
+                if (_isSignup) ...[
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8, top: 20),
                     child: Container(
                       width: 400,
                       child: const Text(
-                        "Password",
+                        "Username",
                         textAlign: TextAlign.left,
                         style: TextStyle(color: Colors.white),
                       ),
@@ -190,11 +97,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Container(
                       color: Colors.black,
                       child: TextField(
-                        controller: _passwordController,
-                        obscureText: true,
+                        controller: _usernameController,
                         style: const TextStyle(color: Colors.grey),
                         decoration: InputDecoration(
-                          labelText: "Enter a password",
+                          labelText: "Enter a username",
                           labelStyle: const TextStyle(
                             color: Colors.grey,
                           ),
@@ -214,41 +120,129 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    width: 400,
-                    padding: const EdgeInsets.only(top: 20),
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
+                ],
+                Container(
+                  width: 400,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8, top: 20),
+                    child: Container(
+                      width: 400,
+                      child: const Text(
+                        "Email",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 400,
+                  child: Container(
+                    color: Colors.black,
+                    child: TextField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      style: const TextStyle(color: Colors.grey),
+                      decoration: InputDecoration(
+                        labelText: "Enter an Email",
+                        labelStyle: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            width: 1,
+                            color: Color.fromRGBO(47, 47, 48, 1),
+                          ),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        side: const BorderSide(
-                          color: Colors.amber,
-                          width: 1,
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Colors.grey),
                         ),
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
                       ),
-                      onPressed: loginORsignup,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Text(
-                          _isSignup ? "Sign up" : "Login",
-                          style: TextStyle(
-                            color: Colors.amber,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8, top: 20),
+                  child: Container(
+                    width: 400,
+                    child: const Text(
+                      "Password",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 400,
+                  child: Container(
+                    color: Colors.black,
+                    child: TextField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      style: const TextStyle(color: Colors.grey),
+                      decoration: InputDecoration(
+                        labelText: "Enter a password",
+                        labelStyle: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            width: 1,
+                            color: Color.fromRGBO(47, 47, 48, 1),
                           ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(width: 1, color: Colors.grey),
+                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 400,
+                  padding: const EdgeInsets.only(top: 20),
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      side: const BorderSide(
+                        color: Colors.amber,
+                        width: 1,
+                      ),
+                    ),
+                    onPressed: loginORsignup,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        _isSignup ? "Sign up" : "Login",
+                        style: TextStyle(
+                          color: Colors.amber,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-                  TextButton(
-                    onPressed: toggleAuthMode,
-                    child: Text(
-                      _isSignup ? "Login instead" : "Sign up instead",
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextButton(
+                  onPressed: toggleAuthMode,
+                  child: Text(
+                    _isSignup ? "Login instead" : "Sign up instead",
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

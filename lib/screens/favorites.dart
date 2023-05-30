@@ -1,6 +1,5 @@
 import 'package:cleotour/widgets/common/post.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../auth.dart';
@@ -69,7 +68,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   padding: const EdgeInsets.only(bottom: 40),
                   child: _isLoggedIn
                       ? const Text(
-                          'Favourites',
+                          'Favorites',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
@@ -113,6 +112,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               imageUrl: f['imageUrl'],
                               category: f['category'],
                               isFav: true,
+                              averageRating: f['averageRating'],
                               setParent: () {
                                 setState(() {
                                   _getFavourites();

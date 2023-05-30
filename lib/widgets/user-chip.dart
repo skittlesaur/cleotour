@@ -35,7 +35,7 @@ class UserChip extends StatelessWidget {
             // then change the index
             changeIndex(2);
           },
-          child: const Row(
+          child: Row(
             children: [
               Icon(
                 Icons.person,
@@ -63,7 +63,7 @@ class UserChip extends StatelessWidget {
             // show the add post page
             changeAddingPost(!isAddingPost);
           },
-          child: const Row(
+          child: Row(
             children: [
               Icon(
                 Icons.add,
@@ -88,7 +88,7 @@ class UserChip extends StatelessWidget {
             onPressed: () {
               Auth().signOut();
             },
-            child: const Row(
+            child: Row(
               children: [
                 Icon(
                   Icons.logout,
