@@ -70,9 +70,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  Future<void> initState() async {
+  initState() {
     super.initState();
-    if (await hasNetwork()) {}
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         updateAuthenticationStatus(false);

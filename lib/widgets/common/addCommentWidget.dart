@@ -39,8 +39,7 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _textEditingController = TextEditingController();
-    String inputValue = _textEditingController.text;
+    final _textEditingController = TextEditingController();
     return SingleChildScrollView(
         child: Container(
       margin: EdgeInsets.only(
@@ -64,7 +63,9 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return AlertDialogWidget(title: "You are not signed in", content: "Please sign in to leave a comment");
+                      return AlertDialogWidget(
+                          title: "You are not signed in",
+                          content: "Please sign in to leave a comment");
                     },
                   );
                   return;
