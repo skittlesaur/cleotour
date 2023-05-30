@@ -95,6 +95,24 @@ class _PostState extends State<Post> {
     });
   }
 
+  void _addFavourite() async {
+    if (Auth().getCurrentUser()?.uid != null) {
+      // await FirebaseFirestore.instance
+      //     .collection('users')
+      //     .doc(Auth().getCurrentUser()?.uid)
+      //     .collection('favourites')
+      //     .add({'postId': widget.postId});
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(Auth().getCurrentUser()?.uid)
+          .update({
+        'favourites': FieldValue.arrayUnion([widget.postId])
+      });
+    } else {
+      print('login first');
+    }
+  }
+
   Future<int> getRating() async {
     var snap = await FirebaseFirestore.instance
         .collection('Posts')
@@ -262,10 +280,12 @@ class _PostState extends State<Post> {
         ),
         GestureDetector(
             onDoubleTap: () {
-              setState(() {
-                liked = !liked;
-                liked ? widget.likes++ : widget.likes--;
-              });
+              // setState(() {
+              //   liked = !liked;
+              //   liked ? widget.likes++ : widget.likes--;
+              //   print("favourite");
+              // });
+              _addFavourite();
             },
             child: FutureBuilder(
                 future: downloadFile(),
