@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _fetchPosts() async {
+  Future<void> _fetchPosts() async {
     if (!_isLoading) {
       setState(() {
         _isLoading = true;
@@ -95,134 +95,139 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
-        body: SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  "Trending Tours",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white),
-                ),
-              ),
-              TrendingSection(),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  "Recent",
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white),
-                ),
-              ),
-              Container(
-                height: 30,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _categories.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          categoryValue = _categories[index]['name'];
-                          _posts = [];
-                        });
-                        _fetchPosts();
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 10),
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: categoryValue == _categories[index]['name']
-                              ? Color(0xffffbf00)
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              _categories[index]['icon'],
+        body: RefreshIndicator(
+            onRefresh: () {
+              return _fetchPosts();
+            },
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      "Trending Tours",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white),
+                    ),
+                  ),
+                  TrendingSection(),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      "Recent",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white),
+                    ),
+                  ),
+                  Container(
+                    height: 30,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _categories.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              categoryValue = _categories[index]['name'];
+                              _posts = [];
+                            });
+                            _fetchPosts();
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
                               color: categoryValue == _categories[index]['name']
-                                  ? Colors.black
-                                  : Colors.white,
+                                  ? Color(0xffffbf00)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(50),
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              _categories[index]['name'],
-                              style: TextStyle(
-                                color:
-                                    categoryValue == _categories[index]['name']
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _categories[index]['icon'],
+                                  color: categoryValue ==
+                                          _categories[index]['name']
+                                      ? Colors.black
+                                      : Colors.white,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  _categories[index]['name'],
+                                  style: TextStyle(
+                                    color: categoryValue ==
+                                            _categories[index]['name']
                                         ? Colors.black
                                         : Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Column(
+                    children: [
+                      ..._posts.map((post) {
+                        return Post(
+                          postId: post.id,
+                          body: post['body'],
+                          location: post['location'],
+                          category: post['category'],
+                          posterId: post['posterId'],
+                          posterUserName: post['posterUserName'],
+                          likes: post['likes'],
+                          imageUrl: post['imageUrl'],
+                          postedAt: post['postedAt'],
+                          isFav: false,
+                          setParent: () {},
+                        );
+                      }).toList(),
+                      _isLoading
+                          ? Container(
+                              width: MediaQuery.of(context).size.width,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              color: Colors.black,
+                              child: Text(
+                                "Loading...",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Column(
-                children: [
-                  ..._posts.map((post) {
-                    return Post(
-                      postId: post.id,
-                      body: post['body'],
-                      location: post['location'],
-                      category: post['category'],
-                      posterId: post['posterId'],
-                      posterUserName: post['posterUserName'],
-                      likes: post['likes'],
-                      imageUrl: post['imageUrl'],
-                      postedAt: post['postedAt'],
-                      isFav: false,
-                      setParent: () {},
-                    );
-                  }).toList(),
-                  _isLoading
-                      ? Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          color: Colors.black,
-                          child: Text(
-                            "Loading...",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        )
-                      : Container(),
-                  !_isLoading && _posts.length == 0
-                      ? Container(
-                          width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          color: Colors.black,
-                          child: Text(
-                            "No posts found",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        )
-                      : Container(),
+                            )
+                          : Container(),
+                      !_isLoading && _posts.length == 0
+                          ? Container(
+                              width: MediaQuery.of(context).size.width,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              color: Colors.black,
+                              child: Text(
+                                "No posts found",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          : Container(),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
-        ));
+            )));
   }
 }
