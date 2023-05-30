@@ -101,6 +101,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           imageUrl: f['imageUrl'],
                           category: f['category'],
                           isFav: true,
+                          setParent: () {
+                            setState(() {
+                              _getFavourites();
+                            });
+                          },
                         );
                       }).toList(),
                     ),

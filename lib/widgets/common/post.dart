@@ -20,6 +20,7 @@ class Post extends StatefulWidget {
   String imageUrl;
   String category;
   bool isFav;
+  Function setParent;
 
   Post(
       {required this.postId,
@@ -31,7 +32,8 @@ class Post extends StatefulWidget {
       required this.postedAt,
       required this.imageUrl,
       required this.category,
-      required this.isFav});
+      required this.isFav,
+      required this.setParent});
 
   @override
   State<Post> createState() => _PostState();
@@ -158,6 +160,7 @@ class _PostState extends State<Post> {
     setState(() {
       _isFavourited = false;
     });
+    widget.setParent();
   }
 
   Future<int> getRating() async {
