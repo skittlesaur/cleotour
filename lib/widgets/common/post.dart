@@ -37,6 +37,12 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
+  @override
+  void initState() {
+    super.initState();
+    checkIfFavourite();
+  }
+
   int rating = 0;
   bool checkLoggedIn() {
     return (Auth().getCurrentUser()?.uid != null);
@@ -109,8 +115,44 @@ class _PostState extends State<Post> {
         'favourites': FieldValue.arrayUnion([widget.postId])
       });
     } else {
-      print('login first');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialogWidget(
+              title: "Login required",
+              content: "You must be logged in to be able to favorite posts");
+        },
+      );
     }
+  }
+
+  bool _isFavourited = false;
+  void checkIfFavourite() async {
+    if (Auth().getCurrentUser()?.uid != null) {
+      var userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(Auth().getCurrentUser()?.uid)
+          .get();
+      var userData = userDoc.data();
+      var favorites = userData!['favourites'];
+      if (favorites != null) {
+        if (favorites.contains(widget.postId)) {
+          _isFavourited = true;
+        }
+      }
+    }
+  }
+
+  void unFavourite() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(Auth().getCurrentUser()?.uid)
+        .update({
+      'favourites': FieldValue.arrayRemove([widget.postId])
+    });
+    setState(() {
+      _isFavourited = false;
+    });
   }
 
   Future<int> getRating() async {
@@ -278,7 +320,7 @@ class _PostState extends State<Post> {
         SizedBox(
           height: screenWidth * 0.02,
         ),
-        GestureDetector(
+        InkWell(
             onDoubleTap: () {
               // setState(() {
               //   liked = !liked;
@@ -286,6 +328,9 @@ class _PostState extends State<Post> {
               //   print("favourite");
               // });
               _addFavourite();
+              setState(() {
+                _isFavourited = true;
+              });
             },
             child: FutureBuilder(
                 future: downloadFile(),
@@ -306,105 +351,122 @@ class _PostState extends State<Post> {
                   }
                 })),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                FutureBuilder<int>(
-                  future: getRating(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: Text('Loading...'));
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return RatingWidget(
-                        prevRating: snapshot.data ?? 0,
-                        isLoggedIn: checkLoggedIn(),
-                        onRatingSelected: (rating) {
-                          if (checkLoggedIn()) {
-                            setState(() {
-                              this.rating = rating;
-                              _updateRating(rating);
-                              getRatingsAverage();
-                            });
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialogWidget(
-                                    title: "Login required",
-                                    content: "You must be logged in first");
-                              },
-                            );
-                          }
-                        },
-                      );
-                    }
-                  },
+                Row(
+                  children: [
+                    FutureBuilder<int>(
+                      future: getRating(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: Text('Loading...'));
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return RatingWidget(
+                            prevRating: snapshot.data ?? 0,
+                            isLoggedIn: checkLoggedIn(),
+                            onRatingSelected: (rating) {
+                              if (checkLoggedIn()) {
+                                setState(() {
+                                  this.rating = rating;
+                                  _updateRating(rating);
+                                  getRatingsAverage();
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialogWidget(
+                                        title: "Login required",
+                                        content: "You must be logged in first");
+                                  },
+                                );
+                              }
+                            },
+                          );
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 0,
+                      width: 5,
+                    ),
+                    FutureBuilder(
+                      future: getRatingsAverage(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: Text('Loading...'));
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return Text(snapshot.data.toString(),
+                              style: TextStyle(
+                                  color: Color.fromRGBO(195, 197, 200, 1),
+                                  fontFamily: 'Inter',
+                                  fontSize: 20));
+                        }
+                      },
+                    ),
+                  ],
                 ),
                 SizedBox(
-                  height: 0,
-                  width: 5,
+                  width: 15,
                 ),
-                FutureBuilder(
-                  future: getRatingsAverage(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: Text('Loading...'));
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return Text(snapshot.data.toString(),
-                          style: TextStyle(
-                              color: Color.fromRGBO(195, 197, 200, 1),
-                              fontFamily: 'Inter',
-                              fontSize: 20));
-                    }
-                  },
-                ),
+                TextButton(
+                    style: TextButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        padding: EdgeInsets.only(top: 15, bottom: 15),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        splashFactory: NoSplash.splashFactory),
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                        )),
+                        builder: (_) => CommentsPage(postId: widget.postId),
+                      );
+                    },
+                    child: SizedBox(
+                      height: null,
+                      width: null,
+                      child: Row(
+                        children: [
+                          Icon(Icons.chat_bubble_outline_rounded,
+                              size: 20,
+                              color: Color.fromRGBO(195, 197, 200, 1)),
+                          SizedBox(
+                            height: 0,
+                            width: 5,
+                          ),
+                          Text(40.toString(),
+                              style: TextStyle(
+                                  color: Color.fromRGBO(195, 197, 200, 1),
+                                  fontFamily: 'Inter',
+                                  fontSize: 20))
+                        ],
+                      ),
+                    )),
               ],
             ),
-            SizedBox(
-              width: 15,
-            ),
-            TextButton(
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    padding: EdgeInsets.only(top: 15, bottom: 15),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    splashFactory: NoSplash.splashFactory),
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15),
-                    )),
-                    builder: (_) => CommentsPage(postId: widget.postId),
-                  );
-                },
-                child: SizedBox(
-                  height: null,
-                  width: null,
-                  child: Row(
-                    children: [
-                      Icon(Icons.chat_bubble_outline_rounded,
-                          size: 20, color: Color.fromRGBO(195, 197, 200, 1)),
-                      SizedBox(
-                        height: 0,
-                        width: 5,
-                      ),
-                      Text(40.toString(),
-                          style: TextStyle(
-                              color: Color.fromRGBO(195, 197, 200, 1),
-                              fontFamily: 'Inter',
-                              fontSize: 20))
-                    ],
-                  ),
-                )),
+            _isFavourited
+                ? IconButton(
+                    onPressed: () {
+                      unFavourite();
+                    },
+                    icon: Icon(
+                      Icons.favorite,
+                      color: Color(0xffffbf00),
+                    ))
+                : Container()
           ],
         ),
       ]),
