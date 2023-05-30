@@ -18,13 +18,8 @@ class _TrendingSectionState extends State<TrendingSection> {
         .snapshots();
   }
 
-  void testt() {
-    FirebaseFirestore.instance.collection("Posts").snapshots();
-  }
-
   @override
   Widget build(BuildContext context) {
-    testt();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -61,6 +61,7 @@ class _TrendingCardState extends State<TrendingCard> {
                     snapshot.data!,
                     height: 250,
                     width: double.infinity,
+                    fit: BoxFit.cover,
                   ),
                 );
               }
