@@ -19,18 +19,19 @@ class Post extends StatefulWidget {
   String postedAt;
   String imageUrl;
   String category;
+  bool isFav;
 
-  Post({
-    required this.postId,
-    required this.posterId,
-    required this.posterUserName,
-    required this.body,
-    required this.location,
-    required this.likes,
-    required this.postedAt,
-    required this.imageUrl,
-    required this.category,
-  });
+  Post(
+      {required this.postId,
+      required this.posterId,
+      required this.posterUserName,
+      required this.body,
+      required this.location,
+      required this.likes,
+      required this.postedAt,
+      required this.imageUrl,
+      required this.category,
+      required this.isFav});
 
   @override
   State<Post> createState() => _PostState();
@@ -41,6 +42,7 @@ class _PostState extends State<Post> {
   void initState() {
     super.initState();
     checkIfFavourite();
+    _isFavourited = widget.isFav;
   }
 
   int rating = 0;
@@ -113,6 +115,9 @@ class _PostState extends State<Post> {
           .doc(Auth().getCurrentUser()?.uid)
           .update({
         'favourites': FieldValue.arrayUnion([widget.postId])
+      });
+      setState(() {
+        _isFavourited = true;
       });
     } else {
       showDialog(
@@ -327,9 +332,9 @@ class _PostState extends State<Post> {
               //   liked ? widget.likes++ : widget.likes--;
               //   print("favourite");
               // });
-              _addFavourite();
+
               setState(() {
-                _isFavourited = true;
+                _addFavourite();
               });
             },
             child: FutureBuilder(

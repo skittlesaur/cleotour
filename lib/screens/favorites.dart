@@ -100,6 +100,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           postedAt: f['postedAt'],
                           imageUrl: f['imageUrl'],
                           category: f['category'],
+                          isFav: true,
                         );
                       }).toList(),
                     ),
