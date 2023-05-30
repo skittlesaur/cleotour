@@ -1,18 +1,18 @@
 class Post {
   String id;
-  String userID;
+  String userId;
   String body;
   num? rating;
-  List<String>? imageUrls;
+  String? imageUrl;
   List<String>? comments;
   String category;
 
   Post(
       {required this.id,
-      required this.userID,
+      required this.userId,
       required this.body,
       this.rating = 0,
-      required this.imageUrls,
+      required this.imageUrl,
       this.comments,
       required this.category});
 }
