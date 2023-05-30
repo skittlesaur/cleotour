@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
+import 'package:cleotour/widgets/common/comments-bottom-sheet.dart';
 import '../model/post.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -25,6 +25,25 @@ class _AccountScreenState extends State<AccountScreen> {
     String downloadURL = await _storage.ref(imageUrl).getDownloadURL();
     Image = downloadURL;
     return downloadURL;
+  }
+
+  Future<void> deletePost(Post post) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("Posts")
+          .doc(post.id)
+          .delete();
+      // Delete the associated image file from Firebase Storage if needed
+      await _storage.ref(post.imageUrl).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Post deleted")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to delete post")),
+      );
+      print(e);
+    }
   }
 
   Post? _openPost;
@@ -269,7 +288,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                 child: Center(
                                   child: Container(
                                     width: 350,
-                                    height: 400,
+                                    height: 420,
                                     clipBehavior: Clip.hardEdge,
                                     decoration: BoxDecoration(
                                       color: Colors.black,
@@ -322,6 +341,81 @@ class _AccountScreenState extends State<AccountScreen> {
                                                     fontWeight: FontWeight.w500,
                                                     color: Colors.white),
                                               ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                      onPressed: () {
+                                                        showModalBottomSheet(
+                                                          context: context,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    15),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    15),
+                                                          )),
+                                                          builder: (_) =>
+                                                              CommentsPage(
+                                                                  postId:
+                                                                      _openPost!
+                                                                          .id),
+                                                        );
+                                                      },
+                                                      icon: Icon(
+                                                        Icons
+                                                            .chat_bubble_rounded,
+                                                        color: Colors.white,
+                                                      )),
+                                                  IconButton(
+                                                    icon: Icon(Icons.delete,
+                                                        color: Colors.white),
+                                                    onPressed: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            backgroundColor:
+                                                                Colors.black,
+                                                            title: Text(
+                                                                "Delete",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white)),
+                                                            content: Text(
+                                                                "Are you sure you want to delete?",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white)),
+                                                            actions: [
+                                                              TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    deletePost(
+                                                                        _openPost!);
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
+                                                                  child: Text(
+                                                                      'Delete',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.red))),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                  ),
+                                                ],
+                                              )
                                             ],
                                           ),
                                         ),
@@ -335,16 +429,3 @@ class _AccountScreenState extends State<AccountScreen> {
                       ))));
   }
 }
-
-
-// Container(
-//                                     height: 300,
-//                                     width: 350,
-//                                     decoration: BoxDecoration(
-//                                       image: DecorationImage(
-//                                         image: NetworkImage(
-//                                             _openPost!.imageUrl ?? ""),
-//                                         fit: BoxFit.cover,
-//                                       ),
-//                                     ),
-//                                   ),
