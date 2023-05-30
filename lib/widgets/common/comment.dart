@@ -88,10 +88,10 @@ class _CommentState extends State<Comment> {
                     } else {
                       final imageUrl = snapshot.data;
                       return CircleAvatar(
-                        backgroundImage: imageUrl != null
-                            ? NetworkImage(imageUrl)
-                            : AssetImage('assets/image.png')
-                                as ImageProvider<Object>?,
+                        backgroundImage: (imageUrl == '')
+                            ? AssetImage('assets/image.png')
+                                as ImageProvider<Object>?
+                            : NetworkImage(imageUrl!),
                         radius: 18,
                         backgroundColor: Color.fromRGBO(32, 32, 33, 1),
                       );
