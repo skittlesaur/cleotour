@@ -44,6 +44,7 @@ class _TrendingCardState extends State<TrendingCard> {
     return (Container(
       height: 300,
       width: 500,
+      padding: EdgeInsets.symmetric(horizontal: 10),
       child: Stack(
         children: [
           FutureBuilder(
@@ -66,7 +67,10 @@ class _TrendingCardState extends State<TrendingCard> {
             },
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            margin: EdgeInsets.only(top: 10, left: 10),
+            padding: EdgeInsets.symmetric(
+              horizontal: 10,
+            ),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5), color: Colors.white),
             child: Text(
@@ -80,7 +84,7 @@ class _TrendingCardState extends State<TrendingCard> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 40),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -141,7 +145,6 @@ class _TrendingCardState extends State<TrendingCard> {
           )
         ],
       ),
-      padding: EdgeInsets.symmetric(horizontal: 10),
     ));
   }
 }

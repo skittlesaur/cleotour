@@ -21,7 +21,7 @@ class _AddPostScreenState extends State<AddPost> {
   User? currentUser = Auth().getCurrentUser();
 
   int _currentStep = 0;
-
+  bool _isPosting = false;
   File? _image;
   final _storage = FirebaseStorage.instance;
   final _postsCollection = FirebaseFirestore.instance.collection('Posts');
@@ -58,9 +58,9 @@ class _AddPostScreenState extends State<AddPost> {
 
   Map<String, dynamic> _selectedCategory = {};
 
-  Future getImages() async {
+  Future getImages(bool gallery) async {
     final XFile? pickedImage = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
+      source: (gallery) ? ImageSource.gallery : ImageSource.camera,
     );
 
     if (pickedImage != null) {
@@ -71,30 +71,33 @@ class _AddPostScreenState extends State<AddPost> {
   }
 
   Future uploadPost() async {
-    if (_image?.path != null) {
-      final uuid = Uuid();
-      final ref = _storage.ref().child('images/${uuid.v4()}');
-      String imageUrl = ref.fullPath;
+    final uuid = Uuid();
+    final ref = _storage.ref().child('images/${uuid.v4()}');
+    await ref.putFile(_image!);
+    //  String imageUrl = await ref.getDownloadURL();
+    String imageUrl = ref.fullPath;
 
-      var newDocRef = await _postsCollection.doc();
+    var newDocRef = await _postsCollection.doc();
 
-      await newDocRef.set({
-        'postId': newDocRef.id,
-        'posterId': Auth().getCurrentUser()?.uid,
-        'posterUserName': Auth().getCurrentUser()?.displayName,
-        'body': _postBodyController.text,
-        'postedAt': DateTime.now().toLocal().toString(),
-        'location': _locationController.text,
-        'imageUrl': imageUrl,
-        'likes': 0,
-        'category': _selectedCategory['name']
-      });
+    await newDocRef.set({
+      'postId': newDocRef.id,
+      'posterId': Auth().getCurrentUser()?.uid,
+      'posterUserName': Auth().getCurrentUser()?.displayName,
+      'body': _postBodyController.text,
+      'postedAt': DateTime.now().toLocal().toString(),
+      'location': _locationController.text,
+      'imageUrl': imageUrl,
+      'likes': 0,
+      'category': _selectedCategory['name']
+    });
 
-      widget.changeAddingPost(false);
-    }
+    widget.changeAddingPost(false);
   }
 
   void nextStep() {
+    if (_isPosting) {
+      return;
+    }
     if (_currentStep == 0) {
       // image upload validation
       if (_image == null || _image?.path == null) {
@@ -141,8 +144,13 @@ class _AddPostScreenState extends State<AddPost> {
 
         return;
       }
-
+      setState(() {
+        _isPosting = true;
+      });
       uploadPost();
+      setState(() {
+        _isPosting = false;
+      });
       return;
     }
 
@@ -159,7 +167,8 @@ class _AddPostScreenState extends State<AddPost> {
         color: Colors.black,
         width: MediaQuery.of(context).size.width,
         child: Container(
-          child: Column(children: [
+          child: SingleChildScrollView(
+              child: Column(children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -221,14 +230,14 @@ class _AddPostScreenState extends State<AddPost> {
                         style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     )
-                  // : Image.file(
-                  //     _image!,
-                  //     fit: BoxFit.cover,
-                  //   ),
-                  : Image.network(
-                      "https://images.unsplash.com/photo-1662010021854-e67c538ea7a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=952&q=80",
+                  : Image.file(
+                      _image!,
                       fit: BoxFit.cover,
                     ),
+              // : Image.network(
+              //     "https://images.unsplash.com/photo-1662010021854-e67c538ea7a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=952&q=80",
+              //     fit: BoxFit.cover,
+              //   ),
             ),
             SizedBox(
               height: 10,
@@ -313,7 +322,7 @@ class _AddPostScreenState extends State<AddPost> {
             ),
             // steps
             getCurrentStep(),
-          ]),
+          ])),
         ),
       ),
     );
@@ -350,10 +359,10 @@ class _AddPostScreenState extends State<AddPost> {
             children: [
               MaterialButton(
                 onPressed: () async {
-                  await getImages();
+                  await getImages(true);
                 },
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.42,
+                  width: MediaQuery.of(context).size.width * 0.4,
                   height: 100,
                   decoration: BoxDecoration(
                     color: Colors.grey[900],
@@ -380,11 +389,11 @@ class _AddPostScreenState extends State<AddPost> {
                 ),
               ),
               TextButton(
-                onPressed: () {
-                  // @todo: take a photo
+                onPressed: () async {
+                  await getImages(false);
                 },
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.42,
+                  width: MediaQuery.of(context).size.width * 0.4,
                   height: 100,
                   decoration: BoxDecoration(
                     color: Colors.grey[900],
@@ -419,6 +428,7 @@ class _AddPostScreenState extends State<AddPost> {
 
   Widget Step1() {
     return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

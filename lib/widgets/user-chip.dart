@@ -21,6 +21,10 @@ class UserChip extends StatelessWidget {
     }
 
     return PopupMenuButton(
+      color: Colors.black,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: Colors.grey.shade800)),
       itemBuilder: (context) => [
         PopupMenuItem(
             child: TextButton(
@@ -36,8 +40,8 @@ class UserChip extends StatelessWidget {
             children: [
               Icon(
                 Icons.person,
-                color: Colors.black,
-                size: 16,
+                color: Colors.white,
+                size: 20,
               ),
               SizedBox(
                 width: 10,
@@ -47,7 +51,7 @@ class UserChip extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Colors.black),
+                    color: Colors.white),
               ),
             ],
           ),
@@ -64,8 +68,8 @@ class UserChip extends StatelessWidget {
             children: [
               Icon(
                 Icons.add,
-                color: Colors.black,
-                size: 16,
+                color: Colors.white,
+                size: 20,
               ),
               SizedBox(
                 width: 10,
@@ -75,7 +79,7 @@ class UserChip extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Colors.black),
+                    color: Colors.white),
               ),
             ],
           ),
@@ -89,8 +93,8 @@ class UserChip extends StatelessWidget {
               children: [
                 Icon(
                   Icons.logout,
-                  color: Colors.black,
-                  size: 16,
+                  color: Colors.white,
+                  size: 20,
                 ),
                 SizedBox(
                   width: 10,
@@ -100,7 +104,7 @@ class UserChip extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
-                      color: Colors.black),
+                      color: Colors.white),
                 ),
               ],
             ),
@@ -110,10 +114,9 @@ class UserChip extends StatelessWidget {
       child: Chip(
         padding: EdgeInsets.symmetric(horizontal: 3, vertical: 5),
         backgroundColor: Color(0xfffff8ee),
-        shadowColor: Colors.black,
+        shadowColor: Colors.white,
         avatar: CircleAvatar(
-          backgroundImage: NetworkImage(
-              "https://images.unsplash.com/photo-1662010021854-e67c538ea7a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=952&q=80"),
+          backgroundImage: NetworkImage(currentUser!.photoURL!),
         ),
         label: Text(
           currentUser!.displayName!,
