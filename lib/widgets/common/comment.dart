@@ -90,7 +90,7 @@ class _CommentState extends State<Comment> {
                       return CircleAvatar(
                         backgroundImage: imageUrl != null
                             ? NetworkImage(imageUrl)
-                            : AssetImage('assets/image.png')
+                            : AssetImage('assets/avatardefault.png')
                                 as ImageProvider<Object>?,
                         radius: 18,
                         backgroundColor: Color.fromRGBO(32, 32, 33, 1),

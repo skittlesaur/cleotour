@@ -254,7 +254,7 @@ class _PostState extends State<Post> {
                       return CircleAvatar(
                         backgroundImage: (snapshot.data != null)
                             ? NetworkImage(snapshot.data!)
-                            : AssetImage('assets/image.png')
+                            : AssetImage('assets/avatardefault.png')
                                 as ImageProvider<Object>?,
                         radius: 25,
                         backgroundColor: Color.fromRGBO(32, 32, 33, 1),
