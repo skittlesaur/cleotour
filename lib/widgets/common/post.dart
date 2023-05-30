@@ -49,8 +49,8 @@ class _PostState extends State<Post> {
   @override
   void initState() {
     super.initState();
-    checkIfFavourite();
     _isFavourited = widget.isFav;
+    checkIfFavourite();
     _downloadUrl = downloadFile();
     _downloadPfpUrl = getUserImage(widget.posterId);
   }
