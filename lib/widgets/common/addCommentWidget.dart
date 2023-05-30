@@ -52,11 +52,6 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-              radius: 19.0,
-              backgroundImage: AssetImage('assets/image.png'),
-              backgroundColor: Color.fromRGBO(32, 32, 33, 1)),
-          SizedBox(width: 8.0),
           Expanded(
             child: TextField(
               onSubmitted: (inputValue) {
@@ -64,7 +59,9 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return AlertDialogWidget(title: "You are not signed in", content: "Please sign in to leave a comment");
+                      return AlertDialogWidget(
+                          title: "You are not signed in",
+                          content: "Please sign in to leave a comment");
                     },
                   );
                   return;
