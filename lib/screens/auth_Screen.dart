@@ -1,5 +1,4 @@
 import 'package:cleotour/auth.dart';
-import 'package:cleotour/widgets/Userimage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -101,7 +100,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   child: Column(
                     children: [
                       const Text(
-                        "Cleotours",
+                        "Cleotour",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: Colors.white,

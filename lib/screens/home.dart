@@ -45,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
   List<DocumentSnapshot> _posts = [];
   bool _isLoading = false;
+  bool _loadedAllPosts = false;
 
   final int FETCH_POSTS_LIMIT = 2;
 
@@ -63,32 +64,37 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _fetchPosts() async {
-    if (!_isLoading) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      Query query = FirebaseFirestore.instance
-          .collection('Posts')
-          .orderBy('postedAt', descending: true);
-
-      if (categoryValue != "All") {
-        query = query.where('category', isEqualTo: categoryValue);
-      }
-
-      if (_posts.length > 0) {
-        query = query.startAfterDocument(_posts[_posts.length - 1]);
-      }
-
-      QuerySnapshot querySnapshot = await query.limit(FETCH_POSTS_LIMIT).get();
-
-      // @todo: remove this print statement
-      print("Loaded ${querySnapshot.docs.length} new posts");
-      setState(() {
-        _posts.addAll(querySnapshot.docs);
-        _isLoading = false;
-      });
+    if (_isLoading || _loadedAllPosts) {
+      return;
     }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    Query query = FirebaseFirestore.instance
+        .collection('Posts')
+        .orderBy('postedAt', descending: true);
+
+    if (categoryValue != "All") {
+      query = query.where('category', isEqualTo: categoryValue);
+    }
+
+    if (_posts.length > 0) {
+      query = query.startAfterDocument(_posts[_posts.length - 1]);
+    }
+
+    QuerySnapshot querySnapshot = await query.limit(FETCH_POSTS_LIMIT).get();
+
+    // @todo: remove this print statement
+    print("Loaded ${querySnapshot.docs.length} new posts");
+    setState(() {
+      _posts.addAll(querySnapshot.docs);
+      _isLoading = false;
+      if (querySnapshot.docs.length < FETCH_POSTS_LIMIT) {
+        _loadedAllPosts = true;
+      }
+    });
   }
 
   @override
@@ -192,6 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           likes: post['likes'],
                           imageUrl: post['imageUrl'],
                           postedAt: post['postedAt'],
+                          averageRating: post['averageRating'],
                           isFav: false,
                           setParent: () {},
                         );

@@ -21,19 +21,22 @@ class Post extends StatefulWidget {
   String category;
   bool isFav;
   Function setParent;
+  String averageRating = "0";
 
-  Post(
-      {required this.postId,
-      required this.posterId,
-      required this.posterUserName,
-      required this.body,
-      required this.location,
-      required this.likes,
-      required this.postedAt,
-      required this.imageUrl,
-      required this.category,
-      required this.isFav,
-      required this.setParent});
+  Post({
+    required this.postId,
+    required this.posterId,
+    required this.posterUserName,
+    required this.body,
+    required this.location,
+    required this.likes,
+    required this.postedAt,
+    required this.imageUrl,
+    required this.category,
+    required this.isFav,
+    required this.setParent,
+    required this.averageRating,
+  });
 
   @override
   State<Post> createState() => _PostState();
@@ -49,6 +52,7 @@ class _PostState extends State<Post> {
   }
 
   int rating = 0;
+
   bool checkLoggedIn() {
     return (Auth().getCurrentUser()?.uid != null);
   }
@@ -145,6 +149,7 @@ class _PostState extends State<Post> {
   }
 
   bool _isFavourited = false;
+
   void checkIfFavourite() async {
     if (Auth().getCurrentUser()?.uid != null) {
       var userDoc = await FirebaseFirestore.instance
@@ -283,43 +288,25 @@ class _PostState extends State<Post> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 20),
-                        child: FutureBuilder(
-                          future: getRatingsAverage(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(
-                                  child: Text(
-                                '',
-                                style: TextStyle(color: Colors.grey),
-                              ));
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              return Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                    size: 20,
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(top: 5, left: 5),
-                                    child: Text(snapshot.data.toString() + '.0',
-                                        style: TextStyle(
-                                            color: Color.fromRGBO(
-                                                195, 197, 200, 1),
-                                            fontFamily: 'Inter',
-                                            fontSize: 10)),
-                                  )
-                                ],
-                              );
-                            }
-                          },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                              size: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5, left: 5),
+                              child: Text(widget.averageRating,
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(195, 197, 200, 1),
+                                      fontFamily: 'Inter',
+                                      fontSize: 10)),
+                            )
+                          ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                   SizedBox(height: 5),
@@ -422,11 +409,11 @@ class _PostState extends State<Post> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(
-                              child: Text(
-                            'Loading...',
-                            style: TextStyle(color: Colors.grey),
-                          ));
+                          return RatingWidget(
+                            prevRating: 0,
+                            isLoggedIn: checkLoggedIn(),
+                            onRatingSelected: (rating) {},
+                          );
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else {
