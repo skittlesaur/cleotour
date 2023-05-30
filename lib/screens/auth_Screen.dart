@@ -59,8 +59,9 @@ class _AuthScreenState extends State<AuthScreen> {
       widget.updateAuthenticationStatus(true);
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Something went wrong please try again later'),
+        SnackBar(
+          content:
+              Text(e.message ?? 'Something went wrong please try again later'),
         ),
       );
       setState(() {
@@ -92,7 +93,7 @@ class _AuthScreenState extends State<AuthScreen> {
           },
           blendMode: BlendMode.dstIn,
           child: Container(
-              margin: EdgeInsets.only(top: 150),
+              margin: const EdgeInsets.only(top: 150),
               child: SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
                 child: Form(
