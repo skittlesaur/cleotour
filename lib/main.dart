@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cleotour/screens/account.dart';
 import 'package:cleotour/screens/auth_Screen.dart';
 import 'package:cleotour/screens/favorites.dart';
@@ -37,6 +39,14 @@ class _MyAppState extends State<MyApp> {
   int _currentIndex = 0;
   bool _isLoggedIn = false;
   bool _isAddingPost = false;
+  Future<bool> hasNetwork() async {
+    try {
+      final result = await InternetAddress.lookup('www.google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
 
   void changeIndex(int index) {
     setState(() {
@@ -60,8 +70,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
+    if (await hasNetwork()) {}
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         updateAuthenticationStatus(false);
