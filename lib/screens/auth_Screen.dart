@@ -51,7 +51,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Future<void> register() async {
     try {
-      Auth().createUserWithEmailAndPassword(
+      await Auth().createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         username: _usernameController.text.trim(),
