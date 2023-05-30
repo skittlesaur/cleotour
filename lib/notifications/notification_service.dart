@@ -1,12 +1,30 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
-  static final NotificationService _notificationService =
-      NotificationService._internal();
+  final FlutterLocalNotificationsPlugin notificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
-  factory NotificationService() {
-    return _notificationService;
+  Future<void> initNotification() async {
+    AndroidInitializationSettings initializationSettingsAndroid =
+        const AndroidInitializationSettings('app_icon');
+
+    var initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    await notificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse:
+            (NotificationResponse notificationResponse) async {});
   }
 
-  NotificationService._internal();
+  notificationDetails() {
+    return const NotificationDetails(
+      android: AndroidNotificationDetails('channelId', 'channelName',
+          importance: Importance.max),
+    );
+  }
+
+  Future showNotification(
+      {int id = 0, String? title, String? body, String? payLoad}) async {
+    return notificationsPlugin.show(
+        id, title, body, await notificationDetails());
+  }
 }
