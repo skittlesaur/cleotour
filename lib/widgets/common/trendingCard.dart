@@ -114,7 +114,7 @@ class _TrendingCardState extends State<TrendingCard> {
                             ),
                           ),
                           Text(
-                            "Slim Abdennadher",
+                            widget.posterUserName,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700),
