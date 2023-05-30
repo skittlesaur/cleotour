@@ -161,6 +161,17 @@ class _PostState extends State<Post> {
     }
   }
 
+  Future<String?> getUserImage(String uid) async {
+    var userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    var userData = userDoc.data();
+    var imageURL = userData?['imageUrl'];
+    if (imageURL != null) {
+      return imageURL as String;
+    }
+    return null;
+  }
+
   void unFavourite() async {
     await FirebaseFirestore.instance
         .collection('users')
@@ -225,13 +236,25 @@ class _PostState extends State<Post> {
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Row(
             children: [
-              const CircleAvatar(
-                backgroundImage: AssetImage('assets/image.png'),
-                // foregroundImage:
-                //     NetworkImage('https://shorty-shortener.vercel.app/12oNKo'),
-                radius: 25,
-                backgroundColor: Color.fromRGBO(32, 32, 33, 1),
-              ),
+              FutureBuilder(
+                  future: getUserImage(widget.posterId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return Icon(Icons.error, size: 40);
+                    } else {
+                      return CircleAvatar(
+                        backgroundImage: (snapshot.data != null)
+                            ? NetworkImage(snapshot.data!)
+                            : AssetImage('assets/image.png')
+                                as ImageProvider<Object>?,
+                        radius: 25,
+                        backgroundColor: Color.fromRGBO(32, 32, 33, 1),
+                      );
+                    }
+                  }),
               SizedBox(width: screenWidth * 0.03),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
