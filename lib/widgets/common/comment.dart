@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Comment extends StatefulWidget {
   String postId;
@@ -21,6 +22,17 @@ class Comment extends StatefulWidget {
 }
 
 class _CommentState extends State<Comment> {
+  Future<String> getUserImage(String uid) async {
+    var userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    var userData = userDoc.data();
+    var imageURL = userData?['imageUrl'];
+    if (imageURL != null) {
+      return imageURL as String;
+    }
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -58,13 +70,33 @@ class _CommentState extends State<Comment> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const CircleAvatar(
-                  backgroundImage: AssetImage('assets/image.png'),
-                  /*foregroundImage: NetworkImage(
-                  'https://shorty-shortener.vercel.app/12oNKo',
-                ),*/
-                  radius: 18,
-                  backgroundColor: Color.fromRGBO(32, 32, 33, 1),
+                FutureBuilder<String>(
+                  future: getUserImage(widget.authorId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircleAvatar(
+                        backgroundColor: Color.fromRGBO(32, 32, 33, 1),
+                        radius: 18,
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return CircleAvatar(
+                        backgroundColor: Color.fromRGBO(32, 32, 33, 1),
+                        radius: 18,
+                        child: Icon(Icons.error),
+                      );
+                    } else {
+                      final imageUrl = snapshot.data;
+                      return CircleAvatar(
+                        backgroundImage: imageUrl != null
+                            ? NetworkImage(imageUrl)
+                            : AssetImage('assets/image.png')
+                                as ImageProvider<Object>?,
+                        radius: 18,
+                        backgroundColor: Color.fromRGBO(32, 32, 33, 1),
+                      );
+                    }
+                  },
                 ),
                 SizedBox(width: 6),
                 Text(
