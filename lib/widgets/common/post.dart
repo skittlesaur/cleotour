@@ -52,6 +52,7 @@ class _PostState extends State<Post> {
     checkIfFavourite();
     _isFavourited = widget.isFav;
     _downloadUrl = downloadFile();
+    _downloadPfpUrl = getUserImage(widget.posterId);
   }
 
   int rating = 0;
@@ -61,6 +62,7 @@ class _PostState extends State<Post> {
   }
 
   late Future<String> _downloadUrl;
+  late Future<String?> _downloadPfpUrl;
 
   Future<String> downloadFile() async {
     String downloadURL = await _storage.ref(widget.imageUrl).getDownloadURL();
@@ -68,6 +70,9 @@ class _PostState extends State<Post> {
   }
 
   storeAverageRatings(int rating) async {
+    setState(() {
+      widget.averageRating = rating.toString();
+    });
     await FirebaseFirestore.instance
         .collection('Posts')
         .doc(widget.postId)
@@ -126,11 +131,6 @@ class _PostState extends State<Post> {
 
   void _addFavourite() async {
     if (Auth().getCurrentUser()?.uid != null) {
-      // await FirebaseFirestore.instance
-      //     .collection('users')
-      //     .doc(Auth().getCurrentUser()?.uid)
-      //     .collection('favourites')
-      //     .add({'postId': widget.postId});
       await FirebaseFirestore.instance
           .collection('users')
           .doc(Auth().getCurrentUser()?.uid)
@@ -247,7 +247,7 @@ class _PostState extends State<Post> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               FutureBuilder(
-                  future: getUserImage(widget.posterId),
+                  future: _downloadPfpUrl,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -372,11 +372,6 @@ class _PostState extends State<Post> {
         ),
         InkWell(
             onDoubleTap: () {
-              // setState(() {
-              //   liked = !liked;
-              //   liked ? widget.likes++ : widget.likes--;
-              //   print("favourite");
-              // });
               if (!_isFavourited) {
                 setState(() {
                   _addFavourite();
@@ -416,7 +411,7 @@ class _PostState extends State<Post> {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return RatingWidget(
-                            prevRating: 0,
+                            prevRating: rating,
                             isLoggedIn: checkLoggedIn(),
                             onRatingSelected: (rating) {},
                           );
