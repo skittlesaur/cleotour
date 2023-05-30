@@ -21,12 +21,7 @@ Future main() async {
       //     messagingSenderId: '277688353042',
       //     storageBucket: 'cleotour-8bd53.appspot.com/'),
       );
-
   NotificationService().initNotification();
-
-  NotificationService()
-      .showNotification(title: 'Comments', body: 'New Comment Added');
-
   runApp(MyApp());
 }
 

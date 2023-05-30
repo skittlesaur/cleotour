@@ -6,7 +6,9 @@ class NotificationService {
 
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
-        const AndroidInitializationSettings('app_icon');
+        const AndroidInitializationSettings(
+      'app_icon',
+    );
 
     var initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
@@ -17,8 +19,11 @@ class NotificationService {
 
   notificationDetails() {
     return const NotificationDetails(
-      android: AndroidNotificationDetails('channelId', 'channelName',
-          importance: Importance.max),
+      android: AndroidNotificationDetails(
+        'channelId',
+        'channelName',
+        importance: Importance.max,
+      ),
     );
   }
 

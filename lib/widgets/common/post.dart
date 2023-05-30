@@ -87,7 +87,7 @@ class _PostState extends State<Post> {
         .get()
         .then((value) {
       for (int i = 0; i < amountOfRatings; i++) {
-        average += value.docs[i].data()['rating'];
+        average += value.docs[i].data()['rating']; // use value.size instead of ratings.count()
       }
     });
 

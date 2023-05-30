@@ -91,9 +91,9 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
                   );
                 } else {
                   addCommentToPost(widget.postId, _textEditingController.text);
-                  // NotificationService().showNotification(
-                  //     title: 'Comments', body: 'New Comment Added');
                   setState(() {
+                    NotificationService()
+                        .showNotification(title: 'Comment Added');
                     _textEditingController.clear();
                   });
                 }
