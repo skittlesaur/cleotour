@@ -90,6 +90,7 @@ class _AddPostScreenState extends State<AddPost> {
       'location': _locationController.text,
       'imageUrl': imageUrl,
       'likes': 0,
+      'averageRating': '0',
       'category': _selectedCategory['name']
     });
 

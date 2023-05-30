@@ -53,11 +53,6 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-              radius: 19.0,
-              backgroundImage: AssetImage('assets/image.png'),
-              backgroundColor: Color.fromRGBO(32, 32, 33, 1)),
-          SizedBox(width: 8.0),
           Expanded(
             child: TextField(
               onSubmitted: (inputValue) {

@@ -104,7 +104,7 @@ class _TrendingCardState extends State<TrendingCard> {
                             radius: 20,
                             backgroundImage:
                                 // NetworkImage('https://i.imgur.com/VRWDRXL.png'),
-                                AssetImage('assets/image.png')),
+                                AssetImage('assets/avatardefault.png')),
                       ),
                       SizedBox(
                         width: 10,

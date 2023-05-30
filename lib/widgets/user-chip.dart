@@ -1,6 +1,5 @@
 import 'package:cleotour/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserChip extends StatelessWidget {
@@ -112,18 +111,18 @@ class UserChip extends StatelessWidget {
         ),
       ],
       child: Chip(
-        padding: EdgeInsets.symmetric(horizontal: 3, vertical: 5),
-        backgroundColor: Color(0xfffff8ee),
+        padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
+        backgroundColor: const Color(0xfffff8ee),
         shadowColor: Colors.white,
         avatar: CircleAvatar(
-          backgroundImage: (currentUser!.photoURL != null)
+          backgroundImage: (currentUser?.photoURL != null)
               ? NetworkImage(currentUser!.photoURL!)
-              : AssetImage('assets/avatardefault.png')
+              : const AssetImage('assets/avatardefault.png')
                   as ImageProvider<Object>?,
         ),
         label: Text(
-          currentUser!.displayName!,
-          style: TextStyle(
+          currentUser?.displayName ?? '',
+          style: const TextStyle(
               fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black),
         ),
       ),

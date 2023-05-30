@@ -1,6 +1,5 @@
 import 'package:cleotour/widgets/common/post.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../auth.dart';
@@ -33,26 +32,28 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     if (docSnapshot.exists) {
       var userData = docSnapshot.data();
       var favoritesData = userData!['favourites'];
+      if (favoritesData != null) {
+        // Retrieve and display favorite posts
+        List<DocumentSnapshot> favoritePosts = [];
+        for (var postId in favoritesData) {
+          var postDocSnapshot = await FirebaseFirestore.instance
+              .collection('Posts')
+              .doc(postId)
+              .get();
 
-      // Retrieve and display favorite posts
-      List<DocumentSnapshot> favoritePosts = [];
-      for (var postId in favoritesData) {
-        var postDocSnapshot = await FirebaseFirestore.instance
-            .collection('Posts')
-            .doc(postId)
-            .get();
-
-        if (postDocSnapshot.exists) {
-          favoritePosts.add(postDocSnapshot);
+          if (postDocSnapshot.exists) {
+            favoritePosts.add(postDocSnapshot);
+          }
         }
+        setState(() {
+          favs = favoritePosts;
+          _isLoading = false;
+        });
       }
-      setState(() {
-        favs = favoritePosts;
-        _isLoading = false;
-      });
-    } else {
-      print("User doesn't have favorites.");
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -67,7 +68,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   padding: const EdgeInsets.only(bottom: 40),
                   child: _isLoggedIn
                       ? const Text(
-                          'Favourites',
+                          'Favorites',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
@@ -111,6 +112,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               imageUrl: f['imageUrl'],
                               category: f['category'],
                               isFav: true,
+                              averageRating: f['averageRating'],
                               setParent: () {
                                 setState(() {
                                   _getFavourites();
