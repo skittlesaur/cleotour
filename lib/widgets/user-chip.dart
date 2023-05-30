@@ -34,7 +34,7 @@ class UserChip extends StatelessWidget {
             // hide the add post page just in case
             changeAddingPost(false);
             // then change the index
-            changeIndex(3);
+            changeIndex(2);
           },
           child: Row(
             children: [

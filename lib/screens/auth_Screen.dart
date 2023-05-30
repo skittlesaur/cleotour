@@ -61,11 +61,11 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         height: double.infinity,
         decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage("https://i.imgur.com/9avScxF.png"),
-            fit: BoxFit.cover,
-          ),
-        ),
+            color: Colors.black,
+            image: DecorationImage(
+              image: NetworkImage("https://i.imgur.com/9avScxF.png"),
+              fit: BoxFit.cover,
+            )),
         width: double.infinity,
         child: ShaderMask(
           shaderCallback: (Rect bounds) {
@@ -77,187 +77,178 @@ class _LoginScreenState extends State<LoginScreen> {
           },
           blendMode: BlendMode.dstIn,
           child: Container(
-            color: Colors.black,
-            child: Container(
-              margin: const EdgeInsets.only(top: 200),
-              child: Container(
-                margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      const Text(
-                        "Cleotours",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          fontSize: 36,
-                        ),
-                      ),
-                      if (_isSignup) ...[
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8, top: 20),
-                          child: Container(
-                            width: 400,
-                            child: const Text(
-                              "Username",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 400,
-                          child: Container(
-                            color: Colors.black,
-                            child: TextField(
-                              controller: _usernameController,
-                              style: const TextStyle(color: Colors.grey),
-                              decoration: InputDecoration(
-                                labelText: "Enter a username",
-                                labelStyle: const TextStyle(
-                                  color: Colors.grey,
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    width: 1,
-                                    color: Color.fromRGBO(47, 47, 48, 1),
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(width: 1, color: Colors.grey),
-                                ),
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                      Container(
+            margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Column(
+                children: [
+                  const Text(
+                    "Cleotours",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      fontSize: 36,
+                    ),
+                  ),
+                  if (_isSignup) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8, top: 20),
+                      child: Container(
                         width: 400,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 8, top: 20),
-                          child: Container(
-                            width: 400,
-                            child: const Text(
-                              "Email",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(color: Colors.white),
+                        child: const Text(
+                          "Username",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 400,
+                      child: Container(
+                        color: Colors.black,
+                        child: TextField(
+                          controller: _usernameController,
+                          style: const TextStyle(color: Colors.grey),
+                          decoration: InputDecoration(
+                            labelText: "Enter a username",
+                            labelStyle: const TextStyle(
+                              color: Colors.grey,
                             ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 400,
-                        child: Container(
-                          color: Colors.black,
-                          child: TextField(
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            style: const TextStyle(color: Colors.grey),
-                            decoration: InputDecoration(
-                              labelText: "Enter an Email",
-                              labelStyle: const TextStyle(
-                                color: Colors.grey,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                width: 1,
+                                color: Color.fromRGBO(47, 47, 48, 1),
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Color.fromRGBO(47, 47, 48, 1),
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(width: 1, color: Colors.grey),
-                              ),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8, top: 20),
-                        child: Container(
-                          width: 400,
-                          child: const Text(
-                            "Password",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 400,
-                        child: Container(
-                          color: Colors.black,
-                          child: TextField(
-                            controller: _passwordController,
-                            obscureText: true,
-                            style: const TextStyle(color: Colors.grey),
-                            decoration: InputDecoration(
-                              labelText: "Enter a password",
-                              labelStyle: const TextStyle(
-                                color: Colors.grey,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: Color.fromRGBO(47, 47, 48, 1),
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(width: 1, color: Colors.grey),
-                              ),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 400,
-                        padding: const EdgeInsets.only(top: 20),
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            side: const BorderSide(
-                              color: Colors.amber,
-                              width: 1,
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(width: 1, color: Colors.grey),
                             ),
-                          ),
-                          onPressed: loginORsignup,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Text(
-                              _isSignup ? "Sign up" : "Login",
-                              style: TextStyle(
-                                color: Colors.amber,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
                           ),
                         ),
                       ),
-                      TextButton(
-                        onPressed: toggleAuthMode,
-                        child: Text(
-                          _isSignup ? "Login instead" : "Sign up instead",
+                    ),
+                  ],
+                  Container(
+                    width: 400,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 8, top: 20),
+                      child: Container(
+                        width: 400,
+                        child: const Text(
+                          "Email",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  Container(
+                    width: 400,
+                    child: Container(
+                      color: Colors.black,
+                      child: TextField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(color: Colors.grey),
+                        decoration: InputDecoration(
+                          labelText: "Enter an Email",
+                          labelStyle: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              width: 1,
+                              color: Color.fromRGBO(47, 47, 48, 1),
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: Colors.grey),
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8, top: 20),
+                    child: Container(
+                      width: 400,
+                      child: const Text(
+                        "Password",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 400,
+                    child: Container(
+                      color: Colors.black,
+                      child: TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        style: const TextStyle(color: Colors.grey),
+                        decoration: InputDecoration(
+                          labelText: "Enter a password",
+                          labelStyle: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              width: 1,
+                              color: Color.fromRGBO(47, 47, 48, 1),
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: Colors.grey),
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 400,
+                    padding: const EdgeInsets.only(top: 20),
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        side: const BorderSide(
+                          color: Colors.amber,
+                          width: 1,
+                        ),
+                      ),
+                      onPressed: loginORsignup,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Text(
+                          _isSignup ? "Sign up" : "Login",
+                          style: TextStyle(
+                            color: Colors.amber,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: toggleAuthMode,
+                    child: Text(
+                      _isSignup ? "Login instead" : "Sign up instead",
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
