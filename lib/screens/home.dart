@@ -188,6 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       imageUrl: post['imageUrl'],
                       postedAt: post['postedAt'],
                       isFav: false,
+                      setParent: () {},
                     );
                   }).toList(),
                   _isLoading

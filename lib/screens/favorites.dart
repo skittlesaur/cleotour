@@ -88,7 +88,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       size: 30,
                       color: Colors.white,
                     ))
-                  : (favs.isEmpty)
+                  : (favs.isEmpty && _isLoggedIn)
                       ? const Center(
                           child: Text(
                             'You have no favorites yet!',
@@ -111,6 +111,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               imageUrl: f['imageUrl'],
                               category: f['category'],
                               isFav: true,
+                              setParent: () {
+                                setState(() {
+                                  _getFavourites();
+                                });
+                              },
                             );
                           }).toList(),
                         ),
