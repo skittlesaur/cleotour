@@ -2,20 +2,22 @@ import 'package:cleotour/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
+class AuthScreen extends StatefulWidget {
   Function(bool) updateAuthenticationStatus;
 
-  LoginScreen({Key? key, required this.updateAuthenticationStatus})
+  AuthScreen({Key? key, required this.updateAuthenticationStatus})
       : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _AuthScreenState createState() => _AuthScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _AuthScreenState extends State<AuthScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+
   final authenticationInstance = FirebaseAuth.instance;
   String? errorMessage = '';
 
@@ -33,7 +35,13 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      widget.updateAuthenticationStatus(true);
     } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Wrong email or password'),
+        ),
+      );
       setState(() {
         errorMessage = e.message;
       });
@@ -42,13 +50,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> register() async {
     try {
-      Auth().createUserWithEmailAndPassword(
+      await Auth().createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         username: _usernameController.text.trim(),
       );
+      widget.updateAuthenticationStatus(true);
     } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Something went wrong please try again later'),
+        ),
+      );
       setState(() {
+        print(e.message);
         errorMessage = e.message;
       });
     }
@@ -66,219 +81,232 @@ class _LoginScreenState extends State<LoginScreen> {
               fit: BoxFit.cover,
             )),
         width: double.infinity,
-        child: Container(
-          margin: EdgeInsets.only(top: 150),
-          child: SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            child: Column(
-              children: [
-                const Text(
-                  "Cleotour",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                    fontSize: 36,
-                  ),
-                ),
-                if (_isSignup) ...[
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8, top: 20),
-                    child: Container(
-                      width: 400,
-                      child: const Text(
-                        "Username",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 400,
-                    child: Container(
-                      color: Colors.black,
-                      child: TextField(
-                        controller: _usernameController,
-                        style: const TextStyle(color: Colors.grey),
-                        decoration: InputDecoration(
-                          labelText: "Enter a username",
-                          labelStyle: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              width: 1,
-                              color: Color.fromRGBO(47, 47, 48, 1),
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.grey),
-                          ),
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-                Container(
-                  width: 400,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8, top: 20),
-                    child: Container(
-                      width: 400,
-                      child: const Text(
-                        "Email",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 400,
-                  child: Container(
-                    color: Colors.black,
-                    child: TextField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(color: Colors.grey),
-                      decoration: InputDecoration(
-                        labelText: "Enter an Email",
-                        labelStyle: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            width: 1,
-                            color: Color.fromRGBO(47, 47, 48, 1),
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 1, color: Colors.grey),
-                        ),
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8, top: 20),
-                  child: Container(
-                    width: 400,
-                    child: const Text(
-                      "Password",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 400,
-                  child: Container(
-                    color: Colors.black,
-                    child: TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.grey),
-                      decoration: InputDecoration(
-                        labelText: "Enter a password",
-                        labelStyle: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            width: 1,
-                            color: Color.fromRGBO(47, 47, 48, 1),
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 1, color: Colors.grey),
-                        ),
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 400,
-                  padding: const EdgeInsets.only(top: 20),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      side: const BorderSide(
-                        color: Colors.amber,
-                        width: 1,
-                      ),
-                    ),
-                    onPressed: loginORsignup,
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Text(
-                        _isSignup ? "Sign up" : "Login",
+        child: ShaderMask(
+          shaderCallback: (Rect bounds) {
+            return const LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [Colors.black, Colors.transparent],
+            ).createShader(bounds);
+          },
+          blendMode: BlendMode.dstIn,
+          child: Container(
+              margin: EdgeInsets.only(top: 150),
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Cleotour",
                         style: TextStyle(
-                          color: Colors.amber,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          fontSize: 36,
                         ),
                       ),
-                    ),
+                      if (_isSignup) ...[
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8, top: 20),
+                          child: Container(
+                            width: 400,
+                            child: const Text(
+                              "Username",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: 400,
+                          child: Container(
+                            color: Colors.black,
+                            child: TextFormField(
+                              controller: _usernameController,
+                              style: const TextStyle(color: Colors.grey),
+                              decoration: InputDecoration(
+                                labelText: "Enter a username",
+                                labelStyle: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    width: 1,
+                                    color: Color.fromRGBO(47, 47, 48, 1),
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(width: 1, color: Colors.grey),
+                                ),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.never,
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter a username';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                      Container(
+                        width: 400,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 8, top: 20),
+                          child: Container(
+                            width: 400,
+                            child: const Text(
+                              "Email",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 400,
+                        child: Container(
+                          color: Colors.black,
+                          child: TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            style: const TextStyle(color: Colors.grey),
+                            decoration: InputDecoration(
+                              labelText: "Enter an Email",
+                              labelStyle: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  width: 1,
+                                  color: Color.fromRGBO(47, 47, 48, 1),
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(width: 1, color: Colors.grey),
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty || !value.contains('@')) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8, top: 20),
+                        child: Container(
+                          width: 400,
+                          child: const Text(
+                            "Password",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 400,
+                        child: Container(
+                          color: Colors.black,
+                          child: TextFormField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            style: const TextStyle(color: Colors.grey),
+                            decoration: InputDecoration(
+                              labelText: "Enter a password",
+                              labelStyle: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  width: 1,
+                                  color: Color.fromRGBO(47, 47, 48, 1),
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(width: 1, color: Colors.grey),
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty || value.length < 7) {
+                                return 'password must be at least 7 characters';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 400,
+                        padding: const EdgeInsets.only(top: 20),
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            side: const BorderSide(
+                              color: Colors.amber,
+                              width: 1,
+                            ),
+                          ),
+                          onPressed: loginORsignup,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Text(
+                              _isSignup ? "Sign up" : "Login",
+                              style: TextStyle(
+                                color: Colors.amber,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: toggleAuthMode,
+                        child: Text(
+                          _isSignup
+                              ? "I already have an account"
+                              : "Create account",
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                TextButton(
-                  onPressed: toggleAuthMode,
-                  child: Text(
-                    _isSignup ? "Login instead" : "Sign up instead",
-                    style: TextStyle(
-                      color: Colors.grey[400],
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              )),
         ),
       ),
     );
   }
 
   void loginORsignup() async {
-    try {
-      if (_isSignup) {
-        if (_emailController.text.isEmpty ||
-            _passwordController.text.isEmpty ||
-            _usernameController.text.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please fill in all fields.'),
-            ),
-          );
-        } else {
+    FocusScope.of(context).unfocus();
+    if (_formKey.currentState!.validate()) {
+      try {
+        if (_isSignup) {
           await register();
-          widget.updateAuthenticationStatus(true);
-        }
-      } else {
-        if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please fill in all fields.'),
-            ),
-          );
         } else {
           signIn();
-          widget.updateAuthenticationStatus(true);
         }
+      } catch (err) {
+        debugPrint(err.toString());
       }
-    } catch (err) {
-      debugPrint(err.toString());
     }
   }
 }

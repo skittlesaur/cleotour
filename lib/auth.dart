@@ -25,7 +25,7 @@ class Auth {
       password: password,
     );
     try {
-      authResult.user?.updateDisplayName(username);
+      await authResult.user?.updateDisplayName(username);
       await FirebaseFirestore.instance
           .collection('users')
           .doc(authResult.user!.uid)
