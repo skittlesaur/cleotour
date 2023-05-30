@@ -8,16 +8,12 @@ class Comment extends StatefulWidget {
   String authorUserName;
   String comment;
   String postedAt;
-  int likes;
-  bool liked = false;
-
   Comment({
     required this.postId,
     required this.authorId,
     required this.authorUserName,
     required this.comment,
     required this.postedAt,
-    required this.likes,
   });
 
   @override
@@ -103,8 +99,9 @@ class _CommentState extends State<Comment> {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Row(children: [
-                          Text(
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Text(
                             formatTimestamp(widget.postedAt),
                             style: TextStyle(
                               fontSize: 12,
@@ -112,67 +109,7 @@ class _CommentState extends State<Comment> {
                               color: Colors.grey[500],
                             ),
                           ),
-                          Padding(
-                              padding: EdgeInsets.only(left: 18),
-                              child: Icon(
-                                Icons.circle,
-                                size: 4,
-                                color: Colors.grey[600],
-                              ))
-                        ]),
-                        Padding(
-                          padding: EdgeInsets.only(left: 0),
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              splashFactory: NoSplash.splashFactory,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                widget.liked = !widget.liked;
-                                widget.liked ? widget.likes++ : widget.likes--;
-                              });
-                            },
-                            child: Row(
-                              children: [
-                                widget.liked
-                                    ? ShaderMask(
-                                        shaderCallback: (Rect bounds) {
-                                          return LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: [
-                                              Color.fromRGBO(166, 124, 0, 1),
-                                              Color.fromRGBO(255, 191, 0, 1),
-                                              Color.fromRGBO(255, 220, 115, 1),
-                                            ],
-                                          ).createShader(bounds);
-                                        },
-                                        child: Icon(
-                                          Icons.favorite,
-                                          color: Colors.white,
-                                          size: 16,
-                                        ),
-                                      )
-                                    : Icon(
-                                        Icons.favorite_border_outlined,
-                                        size: 16,
-                                        color: Color.fromRGBO(195, 197, 200, 1),
-                                      ),
-                                const SizedBox(width: 3),
-                                Text(
-                                  widget.likes.toString(),
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(195, 197, 200, 1),
-                                    fontFamily: 'Inter',
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
+                        ),
                       ],
                     ),
                   ],

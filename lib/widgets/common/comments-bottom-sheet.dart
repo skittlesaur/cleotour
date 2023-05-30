@@ -77,7 +77,6 @@ class _CommentsPageState extends State<CommentsPage> {
                             authorUserName: comment['commenterUserName'],
                             comment: comment['comment'],
                             postedAt: comment['postedAt'],
-                            likes: comment['likes'],
                           ),
                           Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16),

@@ -42,6 +42,19 @@ class _PostState extends State<Post> {
     return (Auth().getCurrentUser()?.uid != null);
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _downloadUrl = downloadFile();
+  }
+
+  late Future<String> _downloadUrl;
+
+  Future<String> downloadFile() async {
+    String downloadURL = await _storage.ref(widget.imageUrl).getDownloadURL();
+    return downloadURL;
+  }
+
   storeAverageRatings(int rating) async {
     await FirebaseFirestore.instance
         .collection('Posts')
@@ -73,9 +86,10 @@ class _PostState extends State<Post> {
     });
 
     if (average == 0) {
-      storeAverageRatings(0);
+      if (Auth().getCurrentUser() != null) storeAverageRatings(0);
       return 0;
     } else {
+      if (Auth().getCurrentUser() != null) storeAverageRatings(0);
       storeAverageRatings((average / amountOfRatings).ceil());
       return ((average / amountOfRatings).ceil());
     }
@@ -111,34 +125,6 @@ class _PostState extends State<Post> {
     }
   }
 
-  // void avgRating() async {
-  //   var snaps = await FirebaseFirestore.instance
-  //       .collection('Posts')
-  //       .doc(widget.postId)
-  //       .collection('Ratings')
-  //       .snapshots();
-
-  //   snaps.map((snapshot) {
-  //     if (snapshot.docs.isEmpty) {
-  //       print('0'); // Return 0 if no ratings found
-  //     }
-  //     double totalRating = 0.0;
-  //     int count = 0;
-  //     for (var doc in snapshot.docs) {
-  //       var data = doc.data();
-  //       if (data != null && data.containsKey('rating')) {
-  //         totalRating += (data['rating'] as double);
-  //         count++;
-  //       }
-  //     }
-  //     if (count > 0) {
-  //       print(totalRating / count);
-  //     } else {
-  //       print("0"); // Return 0 if no valid ratings found
-  //     }
-  //   });
-  // }
-
   bool liked = false;
   final _storage = FirebaseStorage.instance;
   String? downloadURL;
@@ -155,11 +141,6 @@ class _PostState extends State<Post> {
     } else {
       return 'just now';
     }
-  }
-
-  Future<String> downloadFile() async {
-    String downloadURL = await _storage.ref(widget.imageUrl).getDownloadURL();
-    return downloadURL;
   }
 
   @override
@@ -268,7 +249,7 @@ class _PostState extends State<Post> {
               });
             },
             child: FutureBuilder(
-                future: downloadFile(),
+                future: _downloadUrl,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
@@ -288,62 +269,58 @@ class _PostState extends State<Post> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                FutureBuilder<int>(
-                  future: getRating(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: Text('Loading...'));
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return RatingWidget(
-                        prevRating: snapshot.data ?? 0,
-                        isLoggedIn: checkLoggedIn(),
-                        onRatingSelected: (rating) {
-                          if (checkLoggedIn()) {
-                            setState(() {
-                              this.rating = rating;
-                              _updateRating(rating);
-                              getRatingsAverage();
-                            });
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialogWidget(
-                                    title: "Login required",
-                                    content: "You must be logged in first");
-                              },
-                            );
-                          }
-                        },
-                      );
-                    }
-                  },
-                ),
-                SizedBox(
-                  height: 0,
-                  width: 5,
-                ),
-                FutureBuilder(
-                  future: getRatingsAverage(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: Text('Loading...'));
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return Text(snapshot.data.toString(),
-                          style: TextStyle(
-                              color: Color.fromRGBO(195, 197, 200, 1),
-                              fontFamily: 'Inter',
-                              fontSize: 20));
-                    }
-                  },
-                ),
-              ],
+            FutureBuilder<int>(
+              future: getRating(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: Text('Loading...'));
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return RatingWidget(
+                    prevRating: snapshot.data ?? 0,
+                    isLoggedIn: checkLoggedIn(),
+                    onRatingSelected: (rating) {
+                      if (checkLoggedIn()) {
+                        setState(() {
+                          this.rating = rating;
+                          _updateRating(rating);
+                          getRatingsAverage();
+                        });
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialogWidget(
+                                title: "Login required",
+                                content: "You must be logged in first");
+                          },
+                        );
+                      }
+                    },
+                  );
+                }
+              },
+            ),
+            SizedBox(
+              height: 0,
+              width: 5,
+            ),
+            FutureBuilder(
+              future: getRatingsAverage(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: Text('Loading...'));
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return Text(snapshot.data.toString(),
+                      style: TextStyle(
+                          color: Color.fromRGBO(195, 197, 200, 1),
+                          fontFamily: 'Inter',
+                          fontSize: 20));
+                }
+              },
             ),
             SizedBox(
               width: 15,
@@ -369,21 +346,8 @@ class _PostState extends State<Post> {
                 child: SizedBox(
                   height: null,
                   width: null,
-                  child: Row(
-                    children: [
-                      Icon(Icons.chat_bubble_outline_rounded,
-                          size: 20, color: Color.fromRGBO(195, 197, 200, 1)),
-                      SizedBox(
-                        height: 0,
-                        width: 5,
-                      ),
-                      Text(40.toString(),
-                          style: TextStyle(
-                              color: Color.fromRGBO(195, 197, 200, 1),
-                              fontFamily: 'Inter',
-                              fontSize: 20))
-                    ],
-                  ),
+                  child: Icon(Icons.chat_bubble_outline_rounded,
+                      size: 20, color: Color.fromRGBO(195, 197, 200, 1)),
                 )),
           ],
         ),
@@ -391,9 +355,3 @@ class _PostState extends State<Post> {
     );
   }
 }
-
-// Text(rating.toString(),
-//                     style: TextStyle(
-//                         color: Color.fromRGBO(195, 197, 200, 1),
-//                         fontFamily: 'Inter',
-//                         fontSize: 20))
