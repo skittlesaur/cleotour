@@ -77,8 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
           },
           blendMode: BlendMode.dstIn,
           child: Container(
-            margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
+            margin: EdgeInsets.only(top: 150),
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               child: Column(
