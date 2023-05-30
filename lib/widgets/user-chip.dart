@@ -116,7 +116,8 @@ class UserChip extends StatelessWidget {
         backgroundColor: Color(0xfffff8ee),
         shadowColor: Colors.white,
         avatar: CircleAvatar(
-          backgroundImage: NetworkImage(currentUser!.photoURL!),
+          backgroundImage: NetworkImage(currentUser!
+              .photoURL!), //bug: if user is signed and doesnt have a pfp everything breaks
         ),
         label: Text(
           currentUser!.displayName!,
