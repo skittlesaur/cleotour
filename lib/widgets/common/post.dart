@@ -152,7 +152,7 @@ class _PostState extends State<Post> {
           .doc(Auth().getCurrentUser()?.uid)
           .get();
       var userData = userDoc.data();
-      var favorites = userData!['favourites'];
+      var favorites = userData?['favourites'];
       if (favorites != null) {
         if (favorites.contains(widget.postId)) {
           _isFavourited = true;
@@ -235,6 +235,7 @@ class _PostState extends State<Post> {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               FutureBuilder(
                   future: getUserImage(widget.posterId),
@@ -272,13 +273,52 @@ class _PostState extends State<Post> {
                         textAlign: TextAlign.left,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 10),
+                        padding: const EdgeInsets.only(left: 10, top: 5),
                         child: Text('#' + widget.category,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontFamily: 'Inter',
                                 fontSize: 10,
                                 fontWeight: FontWeight.w300)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: FutureBuilder(
+                          future: getRatingsAverage(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                  child: Text(
+                                '',
+                                style: TextStyle(color: Colors.grey),
+                              ));
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                    size: 20,
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(top: 5, left: 5),
+                                    child: Text(snapshot.data.toString() + '.0',
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(
+                                                195, 197, 200, 1),
+                                            fontFamily: 'Inter',
+                                            fontSize: 10)),
+                                  )
+                                ],
+                              );
+                            }
+                          },
+                        ),
                       )
                     ],
                   ),
@@ -299,18 +339,28 @@ class _PostState extends State<Post> {
                         fontFamily: 'Inter',
                         fontSize: 12,
                       ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      child: Icon(
+                        Icons.circle,
+                        size: 5,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                    Text(
+                      formatTimestamp(widget.postedAt),
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.grey[500],
+                          fontFamily: 'Inter',
+                          fontSize: 12),
                     )
                   ])
                 ],
               ),
             ],
           ),
-          Text(
-            formatTimestamp(widget.postedAt),
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                color: Colors.grey[500], fontFamily: 'Inter', fontSize: 12),
-          )
         ]),
         SizedBox(
           height: screenWidth * 0.02,
@@ -336,10 +386,11 @@ class _PostState extends State<Post> {
               //   liked ? widget.likes++ : widget.likes--;
               //   print("favourite");
               // });
-
-              setState(() {
-                _addFavourite();
-              });
+              if (!_isFavourited) {
+                setState(() {
+                  _addFavourite();
+                });
+              }
             },
             child: FutureBuilder(
                 future: _downloadUrl,
@@ -371,7 +422,11 @@ class _PostState extends State<Post> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(child: Text('Loading...'));
+                          return Center(
+                              child: Text(
+                            'Loading...',
+                            style: TextStyle(color: Colors.grey),
+                          ));
                         } else if (snapshot.hasError) {
                           return Text('Error: ${snapshot.error}');
                         } else {
@@ -404,56 +459,43 @@ class _PostState extends State<Post> {
                       height: 0,
                       width: 5,
                     ),
-                    FutureBuilder(
-                      future: getRatingsAverage(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: Text('Loading...'));
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          return Text(snapshot.data.toString(),
-                              style: TextStyle(
-                                  color: Color.fromRGBO(195, 197, 200, 1),
-                                  fontFamily: 'Inter',
-                                  fontSize: 20));
-                        }
+                    TextButton(
+                      style: TextButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          padding: EdgeInsets.only(top: 15, bottom: 15),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          splashFactory: NoSplash.splashFactory),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
+                          )),
+                          builder: (_) => CommentsPage(postId: widget.postId),
+                        );
                       },
+                      child: SizedBox(
+                          height: null,
+                          width: null,
+                          child: SizedBox(
+                            height: null,
+                            width: null,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 4, left: 5),
+                              child: Icon(Icons.chat_bubble_outline_rounded,
+                                  size: 20,
+                                  color: Color.fromRGBO(195, 197, 200, 1)),
+                            ),
+                          )),
                     ),
                   ],
                 ),
                 SizedBox(
-                  width: 15,
+                  width: 10,
                 ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      padding: EdgeInsets.only(top: 15, bottom: 15),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      splashFactory: NoSplash.splashFactory),
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                      )),
-                      builder: (_) => CommentsPage(postId: widget.postId),
-                    );
-                  },
-                  child: SizedBox(
-                      height: null,
-                      width: null,
-                      child: SizedBox(
-                        height: null,
-                        width: null,
-                        child: Icon(Icons.chat_bubble_outline_rounded,
-                            size: 20, color: Color.fromRGBO(195, 197, 200, 1)),
-                      )),
-                )
               ],
             ),
             _isFavourited
