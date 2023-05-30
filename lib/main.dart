@@ -25,8 +25,9 @@ Future main() async {
   final fcmToken = await FirebaseMessaging.instance.getToken();
   print(fcmToken);
 
-  FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken))
-
+  FirebaseMessaging.instance.onTokenRefresh
+      .listen((fcmToken) {})
+      .onError((err) {});
   // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
   //   print('Got a message whilst in the foreground!');
   //   print('Message data: ${message.data}');

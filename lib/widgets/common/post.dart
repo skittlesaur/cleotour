@@ -153,7 +153,7 @@ class _PostState extends State<Post> {
           .doc(Auth().getCurrentUser()?.uid)
           .get();
       var userData = userDoc.data();
-      var favorites = userData!['favourites'];
+      var favorites = userData?['favourites'];
       if (favorites != null) {
         if (favorites.contains(widget.postId)) {
           _isFavourited = true;
