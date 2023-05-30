@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class TrendingCard extends StatefulWidget {
@@ -25,6 +24,7 @@ class TrendingCard extends StatefulWidget {
       required this.imageUrl,
       required this.category,
       required this.avgRating});
+
   @override
   State<TrendingCard> createState() => _TrendingCardState();
 }
@@ -41,7 +41,6 @@ class _TrendingCardState extends State<TrendingCard> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.avgRating);
     return (Container(
       height: 300,
       width: 500,
@@ -57,14 +56,17 @@ class _TrendingCardState extends State<TrendingCard> {
               } else {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network(snapshot.data!,
-                      height: 250, width: double.infinity, fit: BoxFit.cover),
+                  child: Image.network(
+                    snapshot.data!,
+                    height: 250,
+                    width: double.infinity,
+                  ),
                 );
               }
             },
           ),
           Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5), color: Colors.white),
             child: Text(
@@ -78,7 +80,7 @@ class _TrendingCardState extends State<TrendingCard> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,7 +128,7 @@ class _TrendingCardState extends State<TrendingCard> {
                   Row(
                     children: [
                       IconButton(
-                          onPressed: () => print("hello"),
+                          onPressed: () => {},
                           icon: Icon(Icons.star,
                               color: Color.fromRGBO(255, 191, 0, 1))),
                       Text(widget.avgRating,
@@ -139,7 +141,7 @@ class _TrendingCardState extends State<TrendingCard> {
           )
         ],
       ),
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: 10),
     ));
   }
 }

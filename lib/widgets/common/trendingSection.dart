@@ -29,7 +29,7 @@ class _TrendingSectionState extends State<TrendingSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 30, top: 20),
+          padding: const EdgeInsets.only(left: 30, top: 8),
           child: Text(
             "Trending Tours",
             style: TextStyle(
@@ -81,27 +81,3 @@ class _TrendingSectionState extends State<TrendingSection> {
     );
   }
 }
-
-// ListView(
-//                   children: [
-//                     CarouselSlider(
-//                       items: [
-//                         TrendingCard(),
-//                         TrendingCard(),
-//                         TrendingCard(),
-//                         TrendingCard(),
-//                         TrendingCard(),
-//                       ],
-//                       options: CarouselOptions(
-//                         height: 280.0,
-//                         enlargeCenterPage: true,
-//                         autoPlay: true,
-//                         aspectRatio: 16 / 9,
-//                         autoPlayCurve: Curves.fastOutSlowIn,
-//                         enableInfiniteScroll: true,
-//                         autoPlayAnimationDuration: Duration(milliseconds: 800),
-//                         viewportFraction: 1,
-//                       ),
-//                     ),
-//                   ],
-//                 )
