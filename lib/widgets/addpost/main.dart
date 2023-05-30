@@ -8,6 +8,8 @@ import 'package:uuid/uuid.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
+import '../../notifications/notification_service.dart';
+
 class AddPost extends StatefulWidget {
   Function changeAddingPost;
 
@@ -151,6 +153,7 @@ class _AddPostScreenState extends State<AddPost> {
         _isPosting = true;
       });
       uploadPost();
+      NotificationService().showNotification(title: 'Post Uploaded');
 
       return;
     }

@@ -10,6 +10,8 @@ import '../../auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import '../../notifications/notification_service.dart';
+
 class Post extends StatefulWidget {
   String postId;
   String posterId;
@@ -87,7 +89,8 @@ class _PostState extends State<Post> {
         .get()
         .then((value) {
       for (int i = 0; i < amountOfRatings; i++) {
-        average += value.docs[i].data()['rating']; // use value.size instead of ratings.count()
+        average += value.docs[i]
+            .data()['rating']; // use value.size instead of ratings.count()
       }
     });
 
@@ -332,14 +335,9 @@ class _PostState extends State<Post> {
         ),
         InkWell(
             onDoubleTap: () {
-              // setState(() {
-              //   liked = !liked;
-              //   liked ? widget.likes++ : widget.likes--;
-              //   print("favourite");
-              // });
-
               setState(() {
                 _addFavourite();
+                NotificationService().showNotification(title: 'Post Favorited');
               });
             },
             child: FutureBuilder(
