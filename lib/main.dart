@@ -49,6 +49,7 @@ class _MyAppState extends State<MyApp> {
   void updateAuthenticationStatus(bool isLoggedIn) {
     setState(() {
       _isLoggedIn = isLoggedIn;
+      _currentIndex = 0;
     });
   }
 
@@ -125,8 +126,7 @@ class _MyAppState extends State<MyApp> {
       return AccountScreen(
           updateAuthenticationStatus: updateAuthenticationStatus);
     } else {
-      return LoginScreen(
-          updateAuthenticationStatus: updateAuthenticationStatus);
+      return AuthScreen(updateAuthenticationStatus: updateAuthenticationStatus);
     }
   }
 }
