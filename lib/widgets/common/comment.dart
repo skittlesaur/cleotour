@@ -89,7 +89,7 @@ class _CommentState extends State<Comment> {
                       final imageUrl = snapshot.data;
                       return CircleAvatar(
                         backgroundImage: (imageUrl == '')
-                            ? AssetImage('assets/image.png')
+                            ? AssetImage('assets/avatardefault.png')
                                 as ImageProvider<Object>?
                             : NetworkImage(imageUrl!),
                         radius: 18,
