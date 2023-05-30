@@ -29,7 +29,7 @@ class _TrendingSectionState extends State<TrendingSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 30, top: 20),
+          padding: const EdgeInsets.only(left: 30, top: 8),
           child: Text(
             "Trending Tours",
             style: TextStyle(

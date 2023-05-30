@@ -66,7 +66,7 @@ class _TrendingCardState extends State<TrendingCard> {
             },
           ),
           Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5), color: Colors.white),
             child: Text(
@@ -80,7 +80,7 @@ class _TrendingCardState extends State<TrendingCard> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -141,7 +141,7 @@ class _TrendingCardState extends State<TrendingCard> {
           )
         ],
       ),
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: 10),
     ));
   }
 }

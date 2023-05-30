@@ -10,6 +10,37 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final List<Map<String, dynamic>> _categories = [
+    {
+      "name": "All",
+      "icon": Icons.all_inbox,
+    },
+    {
+      "name": "Museum",
+      "icon": Icons.museum,
+    },
+    {
+      "name": "Restaurant",
+      "icon": Icons.restaurant,
+    },
+    {
+      "name": "Hotel",
+      "icon": Icons.hotel,
+    },
+    {
+      "name": "Park",
+      "icon": Icons.park,
+    },
+    {
+      "name": "Beach",
+      "icon": Icons.beach_access,
+    },
+    {
+      "name": "Other",
+      "icon": Icons.more_horiz,
+    },
+  ];
+
   String categoryValue = "All";
   final ScrollController _scrollController = ScrollController();
   List<DocumentSnapshot> _posts = [];
@@ -37,21 +68,19 @@ class _HomeScreenState extends State<HomeScreen> {
         _isLoading = true;
       });
 
-      QuerySnapshot querySnapshot;
-      if (_posts.isEmpty) {
-        querySnapshot = await FirebaseFirestore.instance
-            .collection('Posts')
-            .orderBy('postedAt', descending: true)
-            .limit(FETCH_POSTS_LIMIT)
-            .get();
-      } else {
-        querySnapshot = await FirebaseFirestore.instance
-            .collection('Posts')
-            .orderBy('postedAt', descending: true)
-            .startAfterDocument(_posts.last)
-            .limit(FETCH_POSTS_LIMIT)
-            .get();
+      Query query = FirebaseFirestore.instance
+          .collection('Posts')
+          .orderBy('postedAt', descending: true);
+
+      if (categoryValue != "All") {
+        query = query.where('category', isEqualTo: categoryValue);
       }
+
+      if (_posts.length > 0) {
+        query = query.startAfterDocument(_posts[_posts.length - 1]);
+      }
+
+      QuerySnapshot querySnapshot = await query.limit(FETCH_POSTS_LIMIT).get();
 
       // @todo: remove this print statement
       print("Loaded ${querySnapshot.docs.length} new posts");
@@ -72,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
                   "Trending Tours",
                   style: TextStyle(
@@ -82,60 +111,113 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               TrendingSection(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      "Recent",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white),
-                    ),
-                  ),
-                  DropdownButton<String>(
-                    borderRadius: BorderRadius.circular(10),
-                    dropdownColor: Color.fromRGBO(255, 191, 0, 1),
-                    focusColor: Colors.grey.shade900,
-                    value: categoryValue,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        categoryValue = newValue!;
-                      });
-                    },
-                    icon: Icon(Icons.format_list_bulleted_sharp),
-                    iconSize: 24.0,
-                    elevation: 16,
-                    underline: SizedBox(),
-                    items: ['Beach', 'Club', 'Museum', 'Restaurant', 'All']
-                        .map((String item) {
-                      return DropdownMenuItem<String>(
-                        child: Text(
-                          item,
-                          style: TextStyle(color: Colors.white),
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  "Recent",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white),
+                ),
+              ),
+              Container(
+                height: 30,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _categories.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          categoryValue = _categories[index]['name'];
+                          _posts = [];
+                        });
+                        _fetchPosts();
+                      },
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: categoryValue == _categories[index]['name']
+                              ? Color(0xffffbf00)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(50),
                         ),
-                        value: item,
-                      );
-                    }).toList(),
-                  )
-                ],
+                        child: Row(
+                          children: [
+                            Icon(
+                              _categories[index]['icon'],
+                              color: categoryValue == _categories[index]['name']
+                                  ? Colors.black
+                                  : Colors.white,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              _categories[index]['name'],
+                              style: TextStyle(
+                                color:
+                                    categoryValue == _categories[index]['name']
+                                        ? Colors.black
+                                        : Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 10,
               ),
               Column(
-                children: _posts.map((post) {
-                  return Post(
-                    postId: post.id,
-                    body: post['body'],
-                    location: post['location'],
-                    category: post['category'],
-                    posterId: post['posterId'],
-                    posterUserName: post['posterUserName'],
-                    likes: post['likes'],
-                    imageUrl: post['imageUrl'],
-                    postedAt: post['postedAt'],
-                  );
-                }).toList(),
+                children: [
+                  ..._posts.map((post) {
+                    return Post(
+                      postId: post.id,
+                      body: post['body'],
+                      location: post['location'],
+                      category: post['category'],
+                      posterId: post['posterId'],
+                      posterUserName: post['posterUserName'],
+                      likes: post['likes'],
+                      imageUrl: post['imageUrl'],
+                      postedAt: post['postedAt'],
+                    );
+                  }).toList(),
+                  _isLoading
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          color: Colors.black,
+                          child: Text(
+                            "Loading...",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      : Container(),
+                  !_isLoading && _posts.length == 0
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          color: Colors.black,
+                          child: Text(
+                            "No posts found",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      : Container(),
+                ],
               ),
             ],
           ),
