@@ -33,26 +33,28 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     if (docSnapshot.exists) {
       var userData = docSnapshot.data();
       var favoritesData = userData!['favourites'];
+      if (favoritesData != null) {
+        // Retrieve and display favorite posts
+        List<DocumentSnapshot> favoritePosts = [];
+        for (var postId in favoritesData) {
+          var postDocSnapshot = await FirebaseFirestore.instance
+              .collection('Posts')
+              .doc(postId)
+              .get();
 
-      // Retrieve and display favorite posts
-      List<DocumentSnapshot> favoritePosts = [];
-      for (var postId in favoritesData) {
-        var postDocSnapshot = await FirebaseFirestore.instance
-            .collection('Posts')
-            .doc(postId)
-            .get();
-
-        if (postDocSnapshot.exists) {
-          favoritePosts.add(postDocSnapshot);
+          if (postDocSnapshot.exists) {
+            favoritePosts.add(postDocSnapshot);
+          }
         }
+        setState(() {
+          favs = favoritePosts;
+          _isLoading = false;
+        });
       }
-      setState(() {
-        favs = favoritePosts;
-        _isLoading = false;
-      });
-    } else {
-      print("User doesn't have favorites.");
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
