@@ -115,13 +115,13 @@ class UserChip extends StatelessWidget {
         backgroundColor: const Color(0xfffff8ee),
         shadowColor: Colors.white,
         avatar: CircleAvatar(
-          backgroundImage: (currentUser!.photoURL != null)
+          backgroundImage: (currentUser?.photoURL != null)
               ? NetworkImage(currentUser!.photoURL!)
               : const AssetImage('assets/avatardefault.png')
                   as ImageProvider<Object>?,
         ),
         label: Text(
-          currentUser!.displayName!,
+          currentUser?.displayName ?? '',
           style: const TextStyle(
               fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black),
         ),
