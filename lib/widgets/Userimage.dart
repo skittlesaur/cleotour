@@ -73,7 +73,7 @@ class _UserImagePickerState extends State<UserImagePicker> {
               backgroundColor: Colors.amber,
               backgroundImage: _pickedImage != null
                   ? FileImage(_pickedImage!)
-                  : _imageUrl != null
+                  : _imageUrl != ''
                       ? NetworkImage(_imageUrl)
                       : AssetImage('assets/avatardefault.png')
                           as ImageProvider<Object>?,

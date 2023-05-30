@@ -25,7 +25,7 @@ class TopBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "cleotour",
+            "Cleotour",
             style: TextStyle(
                 fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
           ),
