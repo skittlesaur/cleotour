@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'notifications/notification_service.dart';
 import 'screens/home.dart';
 
 Future main() async {
@@ -22,12 +23,8 @@ Future main() async {
       //     messagingSenderId: '277688353042',
       //     storageBucket: 'cleotour-8bd53.appspot.com/'),
       );
-  FirebaseMessaging.onBackgroundMessage(background_notif_handler);
+  NotificationService().initNotification();
   runApp(MyApp());
-}
-
-Future<void> background_notif_handler(RemoteMessage message) async {
-  print("Handling a background message: ${message.data}");
 }
 
 class MyApp extends StatefulWidget {

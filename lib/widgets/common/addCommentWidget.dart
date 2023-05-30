@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../auth.dart';
+import '../../notifications/notification_service.dart';
 import 'alertDialogWidget.dart';
 
 class AddCommentWidget extends StatefulWidget {
@@ -51,11 +52,6 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-              radius: 19.0,
-              backgroundImage: AssetImage('assets/image.png'),
-              backgroundColor: Color.fromRGBO(32, 32, 33, 1)),
-          SizedBox(width: 8.0),
           Expanded(
             child: TextField(
               onSubmitted: (inputValue) {
@@ -90,6 +86,8 @@ class _AddCommentWidgetState extends State<AddCommentWidget> {
                 } else {
                   addCommentToPost(widget.postId, _textEditingController.text);
                   setState(() {
+                    NotificationService()
+                        .showNotification(title: 'Comment Added');
                     _textEditingController.clear();
                   });
                 }

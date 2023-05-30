@@ -57,12 +57,8 @@ class _TrendingCardState extends State<TrendingCard> {
               } else {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                    snapshot.data!,
-                    height: 250,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
+                  child: Image.network(snapshot.data!,
+                      height: 250, width: double.infinity, fit: BoxFit.cover),
                 );
               }
             },
@@ -104,7 +100,7 @@ class _TrendingCardState extends State<TrendingCard> {
                             radius: 20,
                             backgroundImage:
                                 // NetworkImage('https://i.imgur.com/VRWDRXL.png'),
-                                AssetImage('assets/image.png')),
+                                AssetImage('assets/avatardefault.png')),
                       ),
                       SizedBox(
                         width: 10,

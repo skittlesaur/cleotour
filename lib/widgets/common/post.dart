@@ -8,6 +8,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+import '../../notifications/notification_service.dart';
 
 class Post extends StatefulWidget {
   String postId;
@@ -46,9 +49,10 @@ class _PostState extends State<Post> {
   @override
   void initState() {
     super.initState();
-    checkIfFavourite();
     _isFavourited = widget.isFav;
+    checkIfFavourite();
     _downloadUrl = downloadFile();
+    _downloadPfpUrl = getUserImage(widget.posterId);
   }
 
   int rating = 0;
@@ -58,6 +62,7 @@ class _PostState extends State<Post> {
   }
 
   late Future<String> _downloadUrl;
+  late Future<String?> _downloadPfpUrl;
 
   Future<String> downloadFile() async {
     String downloadURL = await _storage.ref(widget.imageUrl).getDownloadURL();
@@ -65,6 +70,9 @@ class _PostState extends State<Post> {
   }
 
   storeAverageRatings(int rating) async {
+    setState(() {
+      widget.averageRating = rating.toString();
+    });
     await FirebaseFirestore.instance
         .collection('Posts')
         .doc(widget.postId)
@@ -90,7 +98,8 @@ class _PostState extends State<Post> {
         .get()
         .then((value) {
       for (int i = 0; i < amountOfRatings; i++) {
-        average += value.docs[i].data()['rating'];
+        average += value.docs[i]
+            .data()['rating']; // use value.size instead of ratings.count()
       }
     });
 
@@ -122,11 +131,6 @@ class _PostState extends State<Post> {
 
   void _addFavourite() async {
     if (Auth().getCurrentUser()?.uid != null) {
-      // await FirebaseFirestore.instance
-      //     .collection('users')
-      //     .doc(Auth().getCurrentUser()?.uid)
-      //     .collection('favourites')
-      //     .add({'postId': widget.postId});
       await FirebaseFirestore.instance
           .collection('users')
           .doc(Auth().getCurrentUser()?.uid)
@@ -243,7 +247,7 @@ class _PostState extends State<Post> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               FutureBuilder(
-                  future: getUserImage(widget.posterId),
+                  future: _downloadPfpUrl,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -254,7 +258,7 @@ class _PostState extends State<Post> {
                       return CircleAvatar(
                         backgroundImage: (snapshot.data != null)
                             ? NetworkImage(snapshot.data!)
-                            : AssetImage('assets/image.png')
+                            : AssetImage('assets/avatardefault.png')
                                 as ImageProvider<Object>?,
                         radius: 25,
                         backgroundColor: Color.fromRGBO(32, 32, 33, 1),
@@ -368,14 +372,11 @@ class _PostState extends State<Post> {
         ),
         InkWell(
             onDoubleTap: () {
-              // setState(() {
-              //   liked = !liked;
-              //   liked ? widget.likes++ : widget.likes--;
-              //   print("favourite");
-              // });
               if (!_isFavourited) {
                 setState(() {
                   _addFavourite();
+                  NotificationService()
+                      .showNotification(title: 'Post Favorited');
                 });
               }
             },
@@ -410,7 +411,7 @@ class _PostState extends State<Post> {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return RatingWidget(
-                            prevRating: 0,
+                            prevRating: rating,
                             isLoggedIn: checkLoggedIn(),
                             onRatingSelected: (rating) {},
                           );
