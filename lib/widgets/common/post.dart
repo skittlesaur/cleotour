@@ -86,11 +86,13 @@ class _PostState extends State<Post> {
     });
 
     if (average == 0) {
-      if (Auth().getCurrentUser() != null) storeAverageRatings(0);
+      if (Auth().getCurrentUser()?.uid != null) {
+        storeAverageRatings(0);
+      }
       return 0;
     } else {
-      if (Auth().getCurrentUser() != null) storeAverageRatings(0);
-      storeAverageRatings((average / amountOfRatings).ceil());
+      if (Auth().getCurrentUser()?.uid != null)
+        storeAverageRatings((average / amountOfRatings).ceil());
       return ((average / amountOfRatings).ceil());
     }
   }
