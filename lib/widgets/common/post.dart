@@ -339,18 +339,28 @@ class _PostState extends State<Post> {
                         fontFamily: 'Inter',
                         fontSize: 12,
                       ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      child: Icon(
+                        Icons.circle,
+                        size: 5,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                    Text(
+                      formatTimestamp(widget.postedAt),
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: Colors.grey[500],
+                          fontFamily: 'Inter',
+                          fontSize: 12),
                     )
                   ])
                 ],
               ),
             ],
           ),
-          Text(
-            formatTimestamp(widget.postedAt),
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                color: Colors.grey[500], fontFamily: 'Inter', fontSize: 12),
-          )
         ]),
         SizedBox(
           height: screenWidth * 0.02,
