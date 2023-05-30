@@ -66,14 +66,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               Padding(
                   padding: const EdgeInsets.only(bottom: 40),
                   child: _isLoggedIn
-                      ? Text(
+                      ? const Text(
                           'Favourites',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
                               fontSize: 20),
                         )
-                      : Center(
+                      : const Center(
                           child: Text(
                             'You are not logged in',
                             style: TextStyle(
@@ -83,27 +83,42 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           ),
                         )),
               _isLoading && _isLoggedIn
-                  ? Center(
+                  ? const Center(
                       child: SpinKitThreeBounce(
                       size: 30,
                       color: Colors.white,
                     ))
-                  : Column(
-                      children: favs.map((f) {
-                        return Post(
-                          postId: f['postId'],
-                          posterId: f['posterId'],
-                          posterUserName: f['posterUserName'],
-                          body: f['body'],
-                          location: f['location'],
-                          likes: f['likes'],
-                          postedAt: f['postedAt'],
-                          imageUrl: f['imageUrl'],
-                          category: f['category'],
-                          isFav: true,
-                        );
-                      }).toList(),
-                    ),
+                  : (favs.isEmpty && _isLoggedIn)
+                      ? const Center(
+                          child: Text(
+                            'You have no favorites yet!',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 20),
+                          ),
+                        )
+                      : Column(
+                          children: favs.map((f) {
+                            return Post(
+                              postId: f['postId'],
+                              posterId: f['posterId'],
+                              posterUserName: f['posterUserName'],
+                              body: f['body'],
+                              location: f['location'],
+                              likes: f['likes'],
+                              postedAt: f['postedAt'],
+                              imageUrl: f['imageUrl'],
+                              category: f['category'],
+                              isFav: true,
+                              setParent: () {
+                                setState(() {
+                                  _getFavourites();
+                                });
+                              },
+                            );
+                          }).toList(),
+                        ),
             ],
           )),
         ));
