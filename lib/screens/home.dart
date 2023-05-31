@@ -200,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       category: post['category'],
                       posterId: post['posterId'],
                       posterUserName: post['posterUserName'],
-                      likes: post['likes'],
+                      // likes: post['likes'],
                       imageUrl: post['imageUrl'],
                       postedAt: post['postedAt'],
                       averageRating: post['averageRating'],

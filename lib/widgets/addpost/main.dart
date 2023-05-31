@@ -89,7 +89,6 @@ class _AddPostScreenState extends State<AddPost> {
       'postedAt': DateTime.now().toLocal().toString(),
       'location': _locationController.text,
       'imageUrl': imageUrl,
-      'likes': 0,
       'averageRating': '0',
       'category': _selectedCategory['name']
     });

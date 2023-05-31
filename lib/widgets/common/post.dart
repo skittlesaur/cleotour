@@ -18,7 +18,7 @@ class Post extends StatefulWidget {
   String posterUserName;
   String body;
   String location;
-  int likes;
+  // int likes;
   String postedAt;
   String imageUrl;
   String category;
@@ -32,7 +32,7 @@ class Post extends StatefulWidget {
     required this.posterUserName,
     required this.body,
     required this.location,
-    required this.likes,
+    // required this.likes,
     required this.postedAt,
     required this.imageUrl,
     required this.category,
@@ -139,6 +139,7 @@ class _PostState extends State<Post> {
       });
       setState(() {
         _isFavourited = true;
+        NotificationService().showNotification(title: 'Post Favorited');
       });
     } else {
       showDialog(
@@ -375,8 +376,6 @@ class _PostState extends State<Post> {
               if (!_isFavourited) {
                 setState(() {
                   _addFavourite();
-                  NotificationService()
-                      .showNotification(title: 'Post Favorited');
                 });
               }
             },

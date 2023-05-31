@@ -107,7 +107,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               posterUserName: f['posterUserName'],
                               body: f['body'],
                               location: f['location'],
-                              likes: f['likes'],
+                              // likes: f['likes'],
                               postedAt: f['postedAt'],
                               imageUrl: f['imageUrl'],
                               category: f['category'],

@@ -50,7 +50,6 @@ class _TrendingSectionState extends State<TrendingSection> {
                     posterUserName: document['posterUserName'],
                     body: document['body'],
                     location: document['location'],
-                    likes: document['likes'],
                     postedAt: document['postedAt'],
                     imageUrl: document['imageUrl'],
                     category: document['category'],

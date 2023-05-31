@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -7,7 +8,6 @@ class TrendingCard extends StatefulWidget {
   String posterUserName;
   String body;
   String location;
-  int likes;
   String postedAt;
   String imageUrl;
   String category;
@@ -19,7 +19,6 @@ class TrendingCard extends StatefulWidget {
       required this.posterUserName,
       required this.body,
       required this.location,
-      required this.likes,
       required this.postedAt,
       required this.imageUrl,
       required this.category,
@@ -31,11 +30,19 @@ class TrendingCard extends StatefulWidget {
 
 class _TrendingCardState extends State<TrendingCard> {
   final _storage = FirebaseStorage.instance;
-  var img;
 
-  Future<String> downloadFile(String imageUrl) async {
-    String downloadURL = await _storage.ref(imageUrl).getDownloadURL();
-    img = downloadURL;
+  @override
+  void initState() {
+    super.initState();
+    _downloadUrl = downloadFile();
+    // _downloadPfpUrl = getUserImage(widget.posterId);
+  }
+
+  late Future<String> _downloadUrl;
+  late Future<String?> _downloadPfpUrl;
+
+  Future<String> downloadFile() async {
+    String downloadURL = await _storage.ref(widget.imageUrl).getDownloadURL();
     return downloadURL;
   }
 
@@ -48,7 +55,7 @@ class _TrendingCardState extends State<TrendingCard> {
       child: Stack(
         children: [
           FutureBuilder(
-            future: downloadFile(widget.imageUrl),
+            future: _downloadUrl,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
@@ -57,8 +64,11 @@ class _TrendingCardState extends State<TrendingCard> {
               } else {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network(snapshot.data!,
-                      height: 250, width: double.infinity, fit: BoxFit.cover),
+                  child: CachedNetworkImage(
+                      imageUrl: snapshot.data!,
+                      height: 250,
+                      width: double.infinity,
+                      fit: BoxFit.cover),
                 );
               }
             },
