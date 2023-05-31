@@ -51,7 +51,6 @@ class _PostState extends State<Post> {
     super.initState();
     _isFavourited = widget.isFav;
     checkIfFavourite();
-    _downloadUrl = downloadFile();
     _downloadPfpUrl = getUserImage(widget.posterId);
   }
 
@@ -63,11 +62,6 @@ class _PostState extends State<Post> {
 
   late Future<String> _downloadUrl;
   late Future<String?> _downloadPfpUrl;
-
-  Future<String> downloadFile() async {
-    String downloadURL = await _storage.ref(widget.imageUrl).getDownloadURL();
-    return downloadURL;
-  }
 
   storeAverageRatings(int rating) async {
     setState(() {

@@ -34,7 +34,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     if (imagePath != null) {
       final uuid = Uuid();
       final ref = _storage.ref().child('images/${uuid.v4()}');
-      String imageUrl = ref.fullPath;
+      String imageUrl = await ref.getDownloadURL();
 
       var newDocRef = await _postsCollection.doc();
 
@@ -125,7 +125,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return AlertDialogWidget(title: "You are not signed in", content: "Please sign in to be able to add a post");
+                              return AlertDialogWidget(
+                                  title: "You are not signed in",
+                                  content:
+                                      "Please sign in to be able to add a post");
                             },
                           );
                           return;
