@@ -143,7 +143,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               onFieldSubmitted: (_) {
                                 print("hellooooooooooo");
                                 FocusScope.of(context)
-                                    .requestFocus(_emailFocusNode);
+                                    .requestFocus(_passwordFocusNode);
                               },
                               controller: _usernameController,
                               style: const TextStyle(color: Colors.grey),
