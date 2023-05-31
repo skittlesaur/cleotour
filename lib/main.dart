@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cleotour/screens/account.dart';
 import 'package:cleotour/screens/auth_Screen.dart';
 import 'package:cleotour/screens/favorites.dart';
@@ -36,14 +34,6 @@ class _MyAppState extends State<MyApp> {
   int _currentIndex = 0;
   bool _isLoggedIn = false;
   bool _isAddingPost = false;
-  Future<bool> hasNetwork() async {
-    try {
-      final result = await InternetAddress.lookup('www.google.com');
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException catch (_) {
-      return false;
-    }
-  }
 
   void changeIndex(int index) {
     setState(() {
@@ -66,9 +56,36 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+// Background message handler
+  Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    print("Message received in background: ${message.notification?.body}");
+    // Handle the received message when the app is in the background
+  }
+
   @override
   initState() {
     super.initState();
+    final FirebaseMessaging fbm = FirebaseMessaging.instance;
+
+    void initializeFirebaseMessaging() {
+      fbm.requestPermission();
+
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        print("Message received: ${message.notification?.body}");
+        // Handle the received message when the app is in the foreground
+      });
+
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        print("Message opened app: ${message.notification?.body}");
+        // Handle the received message when the app is in the background and opened
+      });
+
+      // For handling background messages (when the app is terminated or in the background)
+      FirebaseMessaging.onBackgroundMessage(
+          _firebaseMessagingBackgroundHandler);
+    }
+
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         updateAuthenticationStatus(false);
