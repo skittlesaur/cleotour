@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleotour/auth.dart';
 import 'package:cleotour/widgets/Userimage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -179,6 +180,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                       .collection("Posts")
                                       .where('posterId',
                                           isEqualTo: currentUser!.uid)
+                                      .orderBy('postedAt', descending: true)
                                       .snapshots(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasError) {
@@ -237,9 +239,12 @@ class _AccountScreenState extends State<AccountScreen> {
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
-                                                    image: NetworkImage(snapshot
-                                                        .data!.docs[index]
-                                                        .get('imageUrl')),
+                                                    image:
+                                                        CachedNetworkImageProvider(
+                                                            snapshot.data
+                                                                ?.docs[index]
+                                                                .get(
+                                                                    'imageUrl')),
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
@@ -265,7 +270,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                 child: Center(
                                   child: Container(
                                     width: 350,
-                                    height: 420,
+                                    height: 450,
                                     clipBehavior: Clip.hardEdge,
                                     decoration: BoxDecoration(
                                       color: Colors.black,
@@ -275,204 +280,213 @@ class _AccountScreenState extends State<AccountScreen> {
                                         width: 1,
                                       ),
                                     ),
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            height: 300,
-                                            width: 350,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: NetworkImage(
-                                                    _openPost!.imageUrl!),
-                                                fit: BoxFit.cover,
-                                              ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 300,
+                                          width: 350,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                  _openPost!.imageUrl!),
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  currentUser!.displayName!,
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Colors.grey[400]),
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                currentUser!.displayName!,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.grey[400]),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Container(
+                                                height: 62,
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        _openPost!.body,
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  _openPost!.body,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: Colors.white),
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 5),
-                                                          child: Icon(
-                                                            Icons.star,
-                                                            color: Colors.amber,
-                                                            size: 20,
-                                                          ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(right: 5),
+                                                        child: Icon(
+                                                          Icons.star,
+                                                          color: Colors.amber,
+                                                          size: 20,
                                                         ),
-                                                        (_openPost!.rating !=
-                                                                null)
-                                                            ? Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        top: 3),
-                                                                child: Text(
-                                                                  _openPost!
-                                                                          .rating
-                                                                          .toString() +
-                                                                      '.0',
-                                                                  style: TextStyle(
-                                                                      color: Color.fromRGBO(
-                                                                          195,
-                                                                          197,
-                                                                          200,
-                                                                          1),
-                                                                      fontFamily:
-                                                                          'Inter',
-                                                                      fontSize:
-                                                                          15),
-                                                                ),
-                                                              )
-                                                            : Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        top: 3),
-                                                                child: Text(
-                                                                  "0.0",
-                                                                  style: TextStyle(
-                                                                      color: Color.fromRGBO(
-                                                                          195,
-                                                                          197,
-                                                                          200,
-                                                                          1),
-                                                                      fontFamily:
-                                                                          'Inter',
-                                                                      fontSize:
-                                                                          15),
-                                                                ),
+                                                      ),
+                                                      (_openPost!.rating !=
+                                                              null)
+                                                          ? Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      top: 3),
+                                                              child: Text(
+                                                                _openPost!
+                                                                        .rating
+                                                                        .toString() +
+                                                                    '.0',
+                                                                style: TextStyle(
+                                                                    color: Color
+                                                                        .fromRGBO(
+                                                                            195,
+                                                                            197,
+                                                                            200,
+                                                                            1),
+                                                                    fontFamily:
+                                                                        'Inter',
+                                                                    fontSize:
+                                                                        15),
                                                               ),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        IconButton(
-                                                            onPressed: () {
-                                                              showModalBottomSheet(
-                                                                context:
-                                                                    context,
-                                                                shape:
-                                                                    RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          15),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          15),
-                                                                )),
-                                                                builder: (_) =>
-                                                                    CommentsPage(
-                                                                        postId:
-                                                                            _openPost!.id),
-                                                              );
-                                                            },
-                                                            icon: Icon(
-                                                              Icons
-                                                                  .chat_bubble_rounded,
-                                                              color:
-                                                                  Colors.white,
-                                                            )),
-                                                        IconButton(
-                                                          icon: Icon(
-                                                              Icons.delete,
-                                                              color:
-                                                                  Colors.white),
+                                                            )
+                                                          : Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      top: 3),
+                                                              child: Text(
+                                                                "0.0",
+                                                                style: TextStyle(
+                                                                    color: Color
+                                                                        .fromRGBO(
+                                                                            195,
+                                                                            197,
+                                                                            200,
+                                                                            1),
+                                                                    fontFamily:
+                                                                        'Inter',
+                                                                    fontSize:
+                                                                        15),
+                                                              ),
+                                                            ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      IconButton(
                                                           onPressed: () {
-                                                            showDialog(
+                                                            showModalBottomSheet(
                                                               context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return AlertDialog(
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .black,
-                                                                  title: Text(
-                                                                      "Delete",
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              Colors.white)),
-                                                                  content: Text(
-                                                                      "Are you sure you want to delete?",
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              Colors.white)),
-                                                                  actions: [
-                                                                    TextButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          deletePost(
-                                                                              _openPost!);
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        child: Text(
-                                                                            'Delete',
-                                                                            style:
-                                                                                TextStyle(color: Colors.red))),
-                                                                  ],
-                                                                );
-                                                              },
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius
+                                                                              .only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        15),
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        15),
+                                                              )),
+                                                              builder: (_) =>
+                                                                  CommentsPage(
+                                                                      postId:
+                                                                          _openPost!
+                                                                              .id),
                                                             );
                                                           },
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
+                                                          icon: Icon(
+                                                            Icons
+                                                                .chat_bubble_rounded,
+                                                            color: Colors.white,
+                                                          )),
+                                                      IconButton(
+                                                        icon: Icon(Icons.delete,
+                                                            color:
+                                                                Colors.white),
+                                                        onPressed: () {
+                                                          showDialog(
+                                                            context: context,
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return AlertDialog(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .black,
+                                                                title: Text(
+                                                                    "Delete",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white)),
+                                                                content: Text(
+                                                                    "Are you sure you want to delete?",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white)),
+                                                                actions: [
+                                                                  TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        deletePost(
+                                                                            _openPost!);
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                      child: Text(
+                                                                          'Delete',
+                                                                          style:
+                                                                              TextStyle(color: Colors.red))),
+                                                                ],
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),

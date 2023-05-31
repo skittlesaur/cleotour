@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -34,13 +35,20 @@ class _TrendingCardState extends State<TrendingCard> {
   @override
   void initState() {
     super.initState();
+    _downloadPfpUrl = getUserImage(widget.posterId);
   }
 
   late Future<String?> _downloadPfpUrl;
 
-  Future<String> downloadFile() async {
-    String downloadURL = await _storage.ref(widget.imageUrl).getDownloadURL();
-    return downloadURL;
+  Future<String> getUserImage(String uid) async {
+    var userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    var userData = userDoc.data();
+    var imageURL = userData?['imageUrl'];
+    if (imageURL != null) {
+      return imageURL as String;
+    }
+    return '';
   }
 
   @override
@@ -85,18 +93,33 @@ class _TrendingCardState extends State<TrendingCard> {
                   Row(
                     children: [
                       Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.grey.shade900,
-                            width: 1,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                            radius: 20,
-                            backgroundImage:
-                                // NetworkImage('https://i.imgur.com/VRWDRXL.png'),
-                                AssetImage('assets/avatardefault.png')),
+                        // decoration: BoxDecoration(
+                        //   shape: BoxShape.circle,
+                        //   border: Border.all(
+                        //     color: Colors.grey.shade900,
+                        //     width: 1,
+                        //   ),
+                        // ),
+                        child: FutureBuilder(
+                            future: _downloadPfpUrl,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                print(snapshot.error);
+                                return Icon(Icons.error, size: 40);
+                              } else {
+                                return CircleAvatar(
+                                    backgroundImage: (snapshot.data! == '')
+                                        ? AssetImage('assets/avatardefault.png')
+                                            as ImageProvider<Object>?
+                                        : NetworkImage(snapshot.data!),
+                                    radius: 25,
+                                    backgroundColor:
+                                        Color.fromRGBO(32, 32, 33, 1));
+                              }
+                            }),
                       ),
                       SizedBox(
                         width: 10,

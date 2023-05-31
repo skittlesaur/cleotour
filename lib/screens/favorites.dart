@@ -34,7 +34,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
     var favsRef = userDocRef.data()?['favourites'];
 
-    if (favsRef.length == 0) {
+    if (favsRef == null || favsRef.length == 0) {
       setState(() {
         _isLoading = false;
         favs = [];
