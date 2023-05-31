@@ -67,6 +67,7 @@ class _MyAppState extends State<MyApp> {
   initState() {
     super.initState();
     final FirebaseMessaging fbm = FirebaseMessaging.instance;
+    fbm.subscribeToTopic('Posts');
 
     void initializeFirebaseMessaging() {
       fbm.requestPermission();

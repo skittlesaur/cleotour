@@ -6,16 +6,17 @@ admin.initializeApp();
 exports.myFunction = functions.firestore
   .document('Posts/{message}')
   .onCreate((snapshot, context) => {
-    console.log(snapshot.data)
-    return admin.messaging().send( {
-        notification: {
-          title: 'New Post !',
-          body: `${snapshot.data().posterUserName} made a new post`,
-          imageUrl:snapshot.data.imageUrl,
-          clickAction: 'FLUTTER_NOTIFICATION_CLICK',
-        },
+    console.log(snapshot.data);
+    const topic = 'Posts'; 
+    const notification = {
+      topic: topic,
+      notification: {
+        title: 'New Post!',
+        body: `${snapshot.data().posterUserName} made a new post`,
+        imageUrl: snapshot.data().imageUrl,
       },
-    )
+    };
 
-}
-    );
+    return admin.messaging().send(notification);
+});
+
