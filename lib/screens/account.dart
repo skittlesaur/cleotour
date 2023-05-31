@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleotour/auth.dart';
 import 'package:cleotour/widgets/Userimage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -179,6 +180,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                       .collection("Posts")
                                       .where('posterId',
                                           isEqualTo: currentUser!.uid)
+                                      .orderBy('postedAt', descending: true)
                                       .snapshots(),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasError) {
@@ -237,9 +239,12 @@ class _AccountScreenState extends State<AccountScreen> {
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
-                                                    image: NetworkImage(snapshot
-                                                        .data!.docs[index]
-                                                        .get('imageUrl')),
+                                                    image:
+                                                        CachedNetworkImageProvider(
+                                                            snapshot.data
+                                                                ?.docs[index]
+                                                                .get(
+                                                                    'imageUrl')),
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),

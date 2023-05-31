@@ -22,6 +22,14 @@ class Comment extends StatefulWidget {
 }
 
 class _CommentState extends State<Comment> {
+  late Future<String> _downloadPfpUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _downloadPfpUrl = getUserImage(widget.authorId);
+  }
+
   Future<String> getUserImage(String uid) async {
     var userDoc =
         await FirebaseFirestore.instance.collection('users').doc(uid).get();
@@ -57,7 +65,6 @@ class _CommentState extends State<Comment> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
       ),
-      //margin: EdgeInsets.symmetric(vertical: 0),
       padding: EdgeInsets.only(top: padding, left: padding, right: padding),
       child: Card(
         elevation: 0,
@@ -71,7 +78,7 @@ class _CommentState extends State<Comment> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 FutureBuilder<String>(
-                  future: getUserImage(widget.authorId),
+                  future: _downloadPfpUrl,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return CircleAvatar(
