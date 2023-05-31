@@ -3,7 +3,7 @@ class Post {
   String userId;
   String body;
   num? rating;
-  String? imageUrl;
+  String imageUrl;
   List<String>? comments;
   String category;
 

@@ -4,7 +4,6 @@ import 'package:cleotour/widgets/common/alertDialogWidget.dart';
 import 'package:cleotour/widgets/common/comments-bottom-sheet.dart';
 import 'package:cleotour/widgets/common/ratings.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -21,7 +20,7 @@ class Post extends StatefulWidget {
   String imageUrl;
   String category;
   bool isFav;
-  Function setParent;
+  Function? setParent;
   String averageRating;
   bool changeFav;
 
@@ -34,8 +33,8 @@ class Post extends StatefulWidget {
     required this.postedAt,
     required this.imageUrl,
     required this.category,
-    required this.isFav,
-    required this.setParent,
+    this.isFav = false,
+    this.setParent,
     this.averageRating = "0",
     this.changeFav = true,
   });
@@ -83,17 +82,6 @@ class _PostState extends State<Post> {
     });
 
     num average = 0;
-    var ratings = await FirebaseFirestore.instance
-        .collection('Posts')
-        .doc(widget.postId)
-        .collection('Ratings')
-        .get()
-        .then((value) {
-      for (int i = 0; i < amountOfRatings; i++) {
-        average += value.docs[i]
-            .data()['rating']; // use value.size instead of ratings.count()
-      }
-    });
 
     if (average == 0) {
       if (Auth().getCurrentUser()?.uid != null) {
@@ -186,7 +174,7 @@ class _PostState extends State<Post> {
         _isFavourited = false;
       });
     }
-    widget.setParent();
+    widget.setParent?.call();
   }
 
   Future<int> getRating() async {
@@ -206,7 +194,6 @@ class _PostState extends State<Post> {
   }
 
   bool liked = false;
-  final _storage = FirebaseStorage.instance;
   String? downloadURL;
 
   String formatTimestamp(String timestamp) {
