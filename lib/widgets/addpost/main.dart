@@ -76,8 +76,7 @@ class _AddPostScreenState extends State<AddPost> {
     final uuid = Uuid();
     final ref = _storage.ref().child('images/${uuid.v4()}');
     await ref.putFile(_image!);
-    //  String imageUrl = await ref.getDownloadURL();
-    String imageUrl = ref.fullPath;
+    String imageUrl = await ref.getDownloadURL();
 
     var newDocRef = await _postsCollection.doc();
 
