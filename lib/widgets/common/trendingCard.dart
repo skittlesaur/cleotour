@@ -34,11 +34,8 @@ class _TrendingCardState extends State<TrendingCard> {
   @override
   void initState() {
     super.initState();
-    _downloadUrl = downloadFile();
-    // _downloadPfpUrl = getUserImage(widget.posterId);
   }
 
-  late Future<String> _downloadUrl;
   late Future<String?> _downloadPfpUrl;
 
   Future<String> downloadFile() async {
@@ -54,24 +51,13 @@ class _TrendingCardState extends State<TrendingCard> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Stack(
         children: [
-          FutureBuilder(
-            future: _downloadUrl,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Icon(Icons.error, size: 100);
-              } else {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: CachedNetworkImage(
-                      imageUrl: snapshot.data!,
-                      height: 250,
-                      width: double.infinity,
-                      fit: BoxFit.cover),
-                );
-              }
-            },
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: CachedNetworkImage(
+                imageUrl: widget.imageUrl,
+                height: 250,
+                width: double.infinity,
+                fit: BoxFit.cover),
           ),
           Container(
             margin: EdgeInsets.only(top: 10, left: 10),
