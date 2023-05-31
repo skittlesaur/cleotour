@@ -124,6 +124,14 @@ class _TrendingCardState extends State<TrendingCard> {
                       SizedBox(
                         width: 10,
                       ),
+                      // Stack(children: [
+                      //   Container(
+                      //       decoration: BoxDecoration(
+                      //           gradient: LinearGradient(
+                      //     begin: Alignment.bottomCenter,
+                      //     end: Alignment.topCenter,
+                      //     colors: [Colors.black, Colors.transparent],
+                      //   ))),
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,6 +151,7 @@ class _TrendingCardState extends State<TrendingCard> {
                           ),
                         ],
                       ),
+                      // ]),
                     ],
                   ),
                   Row(
