@@ -18,7 +18,6 @@ class Post extends StatefulWidget {
   String posterUserName;
   String body;
   String location;
-  // int likes;
   String postedAt;
   String imageUrl;
   String category;
@@ -32,7 +31,6 @@ class Post extends StatefulWidget {
     required this.posterUserName,
     required this.body,
     required this.location,
-    // required this.likes,
     required this.postedAt,
     required this.imageUrl,
     required this.category,
@@ -60,7 +58,6 @@ class _PostState extends State<Post> {
     return (Auth().getCurrentUser()?.uid != null);
   }
 
-  late Future<String> _downloadUrl;
   late Future<String?> _downloadPfpUrl;
 
   storeAverageRatings(int rating) async {
@@ -373,24 +370,14 @@ class _PostState extends State<Post> {
                 });
               }
             },
-            child: FutureBuilder(
-                future: _downloadUrl,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Icon(Icons.error, size: 100);
-                  } else {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: CachedNetworkImage(
-                        imageUrl: snapshot.data!,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  }
-                })),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: CachedNetworkImage(
+                imageUrl: widget.imageUrl,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            )),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

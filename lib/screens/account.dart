@@ -237,8 +237,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        _openPost!.imageUrl!),
+                                                    image: NetworkImage(snapshot
+                                                        .data!.docs[index]
+                                                        .get('imageUrl')),
                                                     fit: BoxFit.cover,
                                                   ),
                                                 ),
@@ -291,10 +292,6 @@ class _AccountScreenState extends State<AccountScreen> {
                                                 fit: BoxFit.cover,
                                               ),
                                             ),
-                                          ),
-                                          Text(
-                                            _openPost?.imageUrl ?? "",
-                                            style: TextStyle(color: Colors.red),
                                           ),
                                           SizedBox(
                                             height: 10,
