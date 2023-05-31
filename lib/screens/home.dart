@@ -77,8 +77,6 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    // _posts.clear();
-
     setState(() {
       _isLoading = true;
     });
@@ -98,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
     QuerySnapshot querySnapshot = await query.limit(FETCH_POSTS_LIMIT).get();
 
     // @todo: remove this print statement
-    print("Loaded ${querySnapshot.docs.length} new posts");
+    // print("Loaded ${querySnapshot.docs.length} new posts");
     setState(() {
       _posts.addAll(querySnapshot.docs);
       _isLoading = false;
@@ -117,9 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
             : */
             RefreshIndicator(
                 onRefresh: () {
-                  print('I am refreshed');
-                  // _posts.clear();
-                  // return ;
+                  // print('I am refreshed');
                   return _refresh();
                 },
                 child: SingleChildScrollView(
@@ -159,6 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 setState(() {
                                   categoryValue = _categories[index]['name'];
                                   _posts = [];
+                                  _loadedAllPosts = false;
                                 });
                                 _fetchPosts();
                               },
