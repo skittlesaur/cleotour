@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../common/post.dart';
+import '../../model/post.dart';
 
 class UserPosts extends StatelessWidget {
   final PostsServices postsServices = PostsServices();
@@ -44,18 +44,14 @@ class UserPosts extends StatelessWidget {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  openPost(
-                    Post(
+                  openPost(Post(
+                      id: snapshot.data!.docs[index].id,
                       imageUrl: snapshot.data!.docs[index].get('imageUrl'),
                       body: snapshot.data!.docs[index].get('body'),
+                      userId: snapshot.data!.docs[index].get('posterId'),
                       category: snapshot.data!.docs[index].get('category'),
-                      postedAt: snapshot.data!.docs[index].get('postedAt'),
-                      postId: snapshot.data!.docs[index].id,
-                      location: snapshot.data!.docs[index].get('location'),
-                      posterId: currentUser!.uid,
-                      posterUserName: currentUser!.displayName ?? "",
-                    ),
-                  );
+                      rating: int.parse(
+                          snapshot.data!.docs[index].get('averageRating'))));
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(4),
