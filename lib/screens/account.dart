@@ -29,7 +29,10 @@ class _AccountScreenState extends State<AccountScreen> {
           .doc(post.id)
           .delete();
       // Delete the associated image file from Firebase Storage if needed
-      await _storage.ref(post.imageUrl).delete();
+      var imgRef = await _storage.refFromURL(post.imageUrl!);
+      // print(imgRef.fullPath);
+      await _storage.ref(imgRef.fullPath).delete();
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Post deleted")),
       );
