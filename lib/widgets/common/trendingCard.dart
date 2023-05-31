@@ -115,7 +115,8 @@ class _TrendingCardState extends State<TrendingCard> {
                                     backgroundImage: (snapshot.data! == '')
                                         ? AssetImage('assets/avatardefault.png')
                                             as ImageProvider<Object>?
-                                        : NetworkImage(snapshot.data!),
+                                        : CachedNetworkImageProvider(
+                                            snapshot.data!),
                                     radius: 25,
                                     backgroundColor:
                                         Color.fromRGBO(32, 32, 33, 1));

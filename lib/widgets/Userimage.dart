@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,7 @@ class _UserImagePickerState extends State<UserImagePicker> {
               backgroundImage: _pickedImage != null
                   ? FileImage(_pickedImage!)
                   : _imageUrl != ''
-                      ? NetworkImage(_imageUrl)
+                      ? CachedNetworkImageProvider(_imageUrl)
                       : AssetImage('assets/avatardefault.png')
                           as ImageProvider<Object>?,
             ),

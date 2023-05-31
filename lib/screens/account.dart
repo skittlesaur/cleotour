@@ -294,7 +294,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                           width: 350,
                                           decoration: BoxDecoration(
                                             image: DecorationImage(
-                                              image: NetworkImage(
+                                              image: CachedNetworkImageProvider(
                                                   _openPost!.imageUrl!),
                                               fit: BoxFit.cover,
                                             ),
