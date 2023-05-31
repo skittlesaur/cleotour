@@ -82,6 +82,14 @@ class _TrendingCardState extends State<TrendingCard> {
                   fontWeight: FontWeight.w600),
             ),
           ),
+          Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [Colors.black, Colors.transparent],
+              ))),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -93,13 +101,6 @@ class _TrendingCardState extends State<TrendingCard> {
                   Row(
                     children: [
                       Container(
-                        // decoration: BoxDecoration(
-                        //   shape: BoxShape.circle,
-                        //   border: Border.all(
-                        //     color: Colors.grey.shade900,
-                        //     width: 1,
-                        //   ),
-                        // ),
                         child: FutureBuilder(
                             future: _downloadPfpUrl,
                             builder: (context, snapshot) {
@@ -124,14 +125,6 @@ class _TrendingCardState extends State<TrendingCard> {
                       SizedBox(
                         width: 10,
                       ),
-                      // Stack(children: [
-                      //   Container(
-                      //       decoration: BoxDecoration(
-                      //           gradient: LinearGradient(
-                      //     begin: Alignment.bottomCenter,
-                      //     end: Alignment.topCenter,
-                      //     colors: [Colors.black, Colors.transparent],
-                      //   ))),
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +144,6 @@ class _TrendingCardState extends State<TrendingCard> {
                           ),
                         ],
                       ),
-                      // ]),
                     ],
                   ),
                   Row(
