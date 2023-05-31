@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
   void updateAuthenticationStatus(bool isLoggedIn) {
     setState(() {
       _isLoggedIn = isLoggedIn;
-      _currentIndex = 0;
+      (isLoggedIn) ? _currentIndex = 0 : _currentIndex = 2;
     });
   }
 

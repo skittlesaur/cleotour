@@ -17,6 +17,8 @@ class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  late FocusNode _emailFocusNode;
+  late FocusNode _passwordFocusNode;
 
   final authenticationInstance = FirebaseAuth.instance;
   String? errorMessage = '';
@@ -27,6 +29,12 @@ class _AuthScreenState extends State<AuthScreen> {
     setState(() {
       _isSignup = !_isSignup;
     });
+  }
+
+  void initState() {
+    super.initState();
+    _emailFocusNode = FocusNode();
+    _passwordFocusNode = FocusNode();
   }
 
   Future<void> signIn() async {
@@ -80,7 +88,7 @@ class _AuthScreenState extends State<AuthScreen> {
             decoration: const BoxDecoration(
               color: Colors.black,
               image: DecorationImage(
-                image: NetworkImage("https://i.imgur.com/9avScxF.png"),
+                image: AssetImage("assets/9avScxF.png"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -99,7 +107,7 @@ class _AuthScreenState extends State<AuthScreen> {
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               child: Container(
-                margin: const EdgeInsets.only(top: 350),
+                margin: const EdgeInsets.only(top: 300),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -131,6 +139,12 @@ class _AuthScreenState extends State<AuthScreen> {
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.black.withOpacity(0.5)),
                             child: TextFormField(
+                              focusNode: _emailFocusNode,
+                              onFieldSubmitted: (_) {
+                                print("hellooooooooooo");
+                                FocusScope.of(context)
+                                    .requestFocus(_emailFocusNode);
+                              },
                               controller: _usernameController,
                               style: const TextStyle(color: Colors.grey),
                               decoration: InputDecoration(
@@ -183,6 +197,10 @@ class _AuthScreenState extends State<AuthScreen> {
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.black.withOpacity(0.5)),
                           child: TextFormField(
+                            onFieldSubmitted: (_) {
+                              FocusScope.of(context)
+                                  .requestFocus(_passwordFocusNode);
+                            },
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             style: const TextStyle(color: Colors.grey),
@@ -232,6 +250,10 @@ class _AuthScreenState extends State<AuthScreen> {
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.black.withOpacity(0.5)),
                           child: TextFormField(
+                            onFieldSubmitted: (_) {
+                              loginORsignup();
+                            },
+                            focusNode: _passwordFocusNode,
                             controller: _passwordController,
                             obscureText: true,
                             style: const TextStyle(color: Colors.grey),

@@ -402,7 +402,10 @@ class _PostState extends State<Post> {
                             onRatingSelected: (rating) {},
                           );
                         } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
+                          return Text(
+                            'No Internet connection ',
+                            style: TextStyle(color: Colors.white),
+                          );
                         } else {
                           return RatingWidget(
                             prevRating: snapshot.data ?? 0,
