@@ -73,28 +73,33 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        height: double.infinity,
-        decoration: const BoxDecoration(
-            color: Colors.black,
-            image: DecorationImage(
-              image: NetworkImage("https://i.imgur.com/9avScxF.png"),
-              fit: BoxFit.cover,
-            )),
-        width: double.infinity,
-        child: ShaderMask(
-          shaderCallback: (Rect bounds) {
-            return const LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [Colors.black, Colors.transparent],
-            ).createShader(bounds);
-          },
-          blendMode: BlendMode.dstIn,
-          child: Container(
-              margin: const EdgeInsets.only(top: 150),
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
+      body: Stack(
+        children: [
+          Container(
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              image: DecorationImage(
+                image: NetworkImage("https://i.imgur.com/9avScxF.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
+            width: double.infinity,
+          ),
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [Colors.black, Colors.transparent],
+              ),
+            ),
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Container(
+                margin: const EdgeInsets.only(top: 350),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -122,7 +127,9 @@ class _AuthScreenState extends State<AuthScreen> {
                         Container(
                           width: 400,
                           child: Container(
-                            color: Colors.black,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.black.withOpacity(0.5)),
                             child: TextFormField(
                               controller: _usernameController,
                               style: const TextStyle(color: Colors.grey),
@@ -172,7 +179,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       Container(
                         width: 400,
                         child: Container(
-                          color: Colors.black,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.black.withOpacity(0.5)),
                           child: TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
@@ -219,7 +228,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       Container(
                         width: 400,
                         child: Container(
-                          color: Colors.black,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.black.withOpacity(0.5)),
                           child: TextFormField(
                             controller: _passwordController,
                             obscureText: true,
@@ -290,8 +301,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     ],
                   ),
                 ),
-              )),
-        ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
