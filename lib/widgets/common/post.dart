@@ -8,7 +8,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../../notifications/notification_service.dart';
 
@@ -23,7 +22,8 @@ class Post extends StatefulWidget {
   String category;
   bool isFav;
   Function setParent;
-  String averageRating = "0";
+  String averageRating;
+  bool changeFav;
 
   Post({
     required this.postId,
@@ -36,7 +36,8 @@ class Post extends StatefulWidget {
     required this.category,
     required this.isFav,
     required this.setParent,
-    required this.averageRating,
+    this.averageRating = "0",
+    this.changeFav = true,
   });
 
   @override
@@ -180,9 +181,11 @@ class _PostState extends State<Post> {
         .update({
       'favourites': FieldValue.arrayRemove([widget.postId])
     });
-    setState(() {
-      _isFavourited = false;
-    });
+    if (widget.changeFav) {
+      setState(() {
+        _isFavourited = false;
+      });
+    }
     widget.setParent();
   }
 

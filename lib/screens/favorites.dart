@@ -1,4 +1,5 @@
 import 'package:cleotour/widgets/common/post.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -10,6 +11,8 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
+  User? currentUser = Auth().getCurrentUser();
+
   @override
   void initState() {
     super.initState();
@@ -26,33 +29,27 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   void _getFavourites() async {
     var userDocRef = await FirebaseFirestore.instance
         .collection('users')
-        .doc(Auth().getCurrentUser()?.uid);
+        .doc(currentUser?.uid)
+        .get();
 
-    var docSnapshot = await userDocRef.get();
-    if (docSnapshot.exists) {
-      var userData = docSnapshot.data();
-      var favoritesData = userData!['favourites'];
-      if (favoritesData != null) {
-        // Retrieve and display favorite posts
-        List<DocumentSnapshot> favoritePosts = [];
-        for (var postId in favoritesData) {
-          var postDocSnapshot = await FirebaseFirestore.instance
-              .collection('Posts')
-              .doc(postId)
-              .get();
+    var favsRef = userDocRef.data()?['favourites'];
 
-          if (postDocSnapshot.exists) {
-            favoritePosts.add(postDocSnapshot);
-          }
-        }
-        setState(() {
-          favs = favoritePosts;
-          _isLoading = false;
-        });
-      }
+    if (favsRef.length == 0) {
+      setState(() {
+        _isLoading = false;
+        favs = [];
+      });
+      return;
     }
+
+    var posts = await FirebaseFirestore.instance
+        .collection('Posts')
+        .where(FieldPath.documentId, whereIn: favsRef)
+        .get();
+
     setState(() {
       _isLoading = false;
+      favs = posts.docs;
     });
   }
 
@@ -112,11 +109,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               imageUrl: f['imageUrl'],
                               category: f['category'],
                               isFav: true,
+                              changeFav: false,
                               averageRating: f['averageRating'],
                               setParent: () {
-                                setState(() {
-                                  _getFavourites();
-                                });
+                                _getFavourites();
                               },
                             );
                           }).toList(),
