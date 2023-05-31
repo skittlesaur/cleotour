@@ -181,6 +181,9 @@ class _PostState extends State<Post> {
         .update({
       'favourites': FieldValue.arrayRemove([widget.postId])
     });
+    // setState(() {
+    //   _isFavourited = false;
+    // });
     if (widget.changeFav) {
       setState(() {
         _isFavourited = false;
